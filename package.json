@@ -1,7 +1,7 @@
 {
-  "name": "angular2-rollup-seed",
+  "name": "angular2-rollup-starter",
   "version": "1.0.0",
-  "description": "Angular2 Seed based on Rollup",
+  "description": "Angular2 Starter based on Rollup",
   "main": "server.js",
   "scripts": {
     "build": "./scripts/build.sh",
