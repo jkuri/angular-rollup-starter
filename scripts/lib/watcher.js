@@ -117,7 +117,6 @@ class Watcher {
             '@angular/forms': 'vendor._angular_forms'
           }
         }).then(resp => {
-          console.log(resp);
           let endTime = new Date();
           let timeDiff = endTime - startTime;
           resolve(timeDiff);
