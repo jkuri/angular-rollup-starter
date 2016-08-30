@@ -3,12 +3,14 @@ import alias from 'rollup-plugin-alias';
 import resolve from 'rollup-plugin-node-resolve';
 import angular from 'rollup-plugin-angular';
 import typescript from 'rollup-plugin-typescript';
-import babel from 'rollup-plugin-babel';
+import buble from 'rollup-plugin-buble';
+
+const dest = 'dist/main.js';
 
 export default {
   entry: 'src/main.ts',
   format: 'iife',
-  dest: 'dist/main.js',
+  dest: dest,
   sourceMap: true,
   plugins: [
     angular({
@@ -24,9 +26,7 @@ export default {
       '@angular/platform-browser-dynamic': path.resolve(__dirname, '../node_modules/@angular/platform-browser-dynamic/esm/index')
     }),
     resolve({ jsnext: true, main: true, browser: true }),
-    babel({
-      babelrc: false,
-      presets: ['es2015-rollup'],
+    buble({
       exclude: 'node_modules/**'
     })
   ],

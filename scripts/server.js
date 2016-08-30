@@ -1,5 +1,5 @@
 const browserSync = require('browser-sync');
-const Build = require('./lib/build');
+const Watcher = require('./lib/watcher');
 
 class Server {
   constructor() {
@@ -8,11 +8,11 @@ class Server {
       server: './dist',
       files: ['./dist/**/*']
     };
-    this.builder = new Build();
+    this.watcher = new Watcher();
   }
 
   start() {
-    this.builder.init().then(resp => {
+    this.watcher.init().then(resp => {
       browserSync(this.options);
     });
   }
