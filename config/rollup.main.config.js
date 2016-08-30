@@ -5,12 +5,10 @@ import angular from 'rollup-plugin-angular';
 import typescript from 'rollup-plugin-typescript';
 import buble from 'rollup-plugin-buble';
 
-const dest = 'dist/main.js';
-
 export default {
   entry: 'src/main.ts',
   format: 'iife',
-  dest: dest,
+  dest: 'dist/main.js',
   sourceMap: true,
   plugins: [
     angular({
