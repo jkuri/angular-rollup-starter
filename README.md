@@ -6,7 +6,7 @@ Yet another Angular2 seed, but this one based on Rollup and BrowserSync.
 
 ### Install
 
-First, close this repository.
+First, clone this repository.
 
 ```sh
 git clone https://github.com/jkuri/angular2-rollup-seed.git
