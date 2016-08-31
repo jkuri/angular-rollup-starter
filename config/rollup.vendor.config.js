@@ -2,21 +2,22 @@ import path from 'path';
 import alias from 'rollup-plugin-alias';
 import resolve from 'rollup-plugin-node-resolve';
 import angular from 'rollup-plugin-angular';
-import typescript from 'rollup-plugin-typescript';
-
-const dest = 'dist/vendor.es2015.js';
+import ts from 'rollup-plugin-typescript';
+import istanbul from 'rollup-plugin-istanbul';
+import buble from 'rollup-plugin-buble';
 
 export default {
   entry: 'src/vendor.ts',
   format: 'iife',
-  dest: dest,
+  dest: 'dist/vendor.js',
   sourceMap: true,
   moduleName: 'vendor',
+  useStrict: false,
   plugins: [
     angular({
       exclude: 'node_modules/**'
     }),
-    typescript({
+    ts({
       typescript: require('../node_modules/typescript')
     }),
     alias({ 
@@ -25,6 +26,12 @@ export default {
       '@angular/common': path.resolve(__dirname, '../node_modules/@angular/common/esm/index'),
       '@angular/platform-browser-dynamic': path.resolve(__dirname, '../node_modules/@angular/platform-browser-dynamic/esm/index')
     }),
-    resolve({ jsnext: true, main: true, browser: true })
+    resolve({ jsnext: true, main: true, browser: true }),
+    buble({
+      transforms: { dangerousForOf: true }
+    }),
+    istanbul({
+      exclude: 'node_modules/**/*'
+    })
   ]
 }

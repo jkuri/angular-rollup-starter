@@ -2,7 +2,7 @@ import path from 'path';
 import alias from 'rollup-plugin-alias';
 import resolve from 'rollup-plugin-node-resolve';
 import angular from 'rollup-plugin-angular';
-import typescript from 'rollup-plugin-typescript';
+import ts from 'rollup-plugin-typescript';
 import buble from 'rollup-plugin-buble';
 
 export default {
@@ -14,7 +14,7 @@ export default {
     angular({
       exclude: 'node_modules/**'
     }),
-    typescript({
+    ts({
       typescript: require('../node_modules/typescript')
     }),
     alias({ 

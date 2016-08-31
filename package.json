@@ -7,7 +7,7 @@
     "roll": "npm run clean && npm run build && npm run minify && npm run index:prod && npm run copy && npm run tree",
     "clean": "rm -rf dist/",
     "build": "npm run build:vendor && npm run build:main",
-    "build:vendor": "rollup -c config/rollup.vendor.config.js && tsc --target es5 --allowJs dist/vendor.es2015.js --out dist/vendor.js 1>/dev/null | xargs true && rm dist/vendor.es2015.js*",
+    "build:vendor": "rollup -c config/rollup.vendor.config.js",
     "build:main": "rollup -c config/rollup.main.config.js",
     "minify": "npm run minify:vendor && npm run minify:main",
     "minify:vendor": "uglifyjs dist/vendor.js --screw-ie8 --compress --mangle --output dist/vendor.min.js &>/dev/null && gzip -f -k -9 dist/vendor.min.js && rm dist/vendor.js*",
@@ -59,11 +59,12 @@
     "rollup-plugin-alias": "^1.2.0",
     "rollup-plugin-angular": "^0.2.3",
     "rollup-plugin-buble": "^0.13.0",
+    "rollup-plugin-istanbul": "^1.0.0",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "rxjs-es": "^5.0.0-beta.11",
     "tslint": "^3.15.1",
     "typescript": "^2.0.0",
-    "uglifyjs": "^2.4.10"
+    "uglifyjs": "github:mishoo/UglifyJS2#harmony"
   }
 }
