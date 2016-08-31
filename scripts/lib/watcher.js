@@ -13,6 +13,8 @@ const buble = require('rollup-plugin-buble');
 
 const indexHtml = new IndexHtml();
 
+let cache;
+
 class Watcher {
   constructor() {
     this.watcher = chokidar.watch('./src', {
@@ -43,8 +45,9 @@ class Watcher {
   }
 
   onChange() {
-    this.watcher.on('change', (path, stats) => {
-      this.log(`${path} changed. Rebuilding...`);
+    this.watcher.on('change', (file, stats) => {
+      this.log(`${file} changed. Rebuilding...`);
+      if (path.extname(file) === '.html') { cache = null; }
       this.build().then(time => {
         this.log(`Built in ${time}ms.`);
       });
@@ -74,6 +77,7 @@ class Watcher {
       let startTime = new Date();
       rollup.rollup({
         entry: path.resolve(__dirname, '../../src/main.ts'),
+        cache: cache,
         plugins: [
           angular({
             exclude: '../../node_modules/**'
@@ -103,6 +107,7 @@ class Watcher {
         ]
       })
       .then(bundle => {
+        cache = bundle;
         bundle.write({
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/main.js'),
