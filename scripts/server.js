@@ -1,12 +1,18 @@
 const browserSync = require('browser-sync');
 const Watcher = require('./lib/watcher');
+const fallback = require('connect-history-api-fallback');
 
 class Server {
   constructor() {
     this.options = {
       port: 4200,
       server: './dist',
-      files: ['./dist/**/*']
+      files: ['./dist/**/*'],
+      middleware: [
+        fallback({
+          index: '/index.html'
+        })
+      ]
     };
     this.watcher = new Watcher();
   }

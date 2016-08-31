@@ -53,6 +53,7 @@
     "browser-sync": "^2.14.0",
     "chokidar": "^1.6.0",
     "codelyzer": "0.0.28",
+    "connect-history-api-fallback": "^1.3.0",
     "lodash": "^4.15.0",
     "nodetree": "0.0.3",
     "rollup": "^0.34.10",
