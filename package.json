@@ -14,7 +14,7 @@
     "minify:main": "uglifyjs dist/main.js --screw-ie8 --compress --mangle --output dist/main.min.js &>/dev/null && gzip -f -k -9 dist/main.min.js && rm dist/main.js*",
     "index:prod": "mkdir -p dist/ && node ./scripts/generate prod",
     "index:dev": "mkdir -p dist/ && node ./scripts/generate dev",
-    "copy": "cp -rf public/* dist/",
+    "copy": "mkdir -p dist/ && cp -rf public/* dist/ && mkdir -p dist/css && find src/styles/ -name \"*.css\" -type f -exec cp -f {} dist/css/ \\;",
     "tree": "nodetree dist/",
     "serve": "node ./scripts/server.js"
   },
@@ -55,6 +55,7 @@
     "codelyzer": "0.0.28",
     "connect-history-api-fallback": "^1.3.0",
     "lodash": "^4.15.0",
+    "node-sass": "^3.8.0",
     "nodetree": "0.0.3",
     "rollup": "^0.34.10",
     "rollup-plugin-alias": "^1.2.0",

@@ -15,13 +15,13 @@ class IndexHTML {
   }
 
   prod() {
-    let styles = [];
+    let styles = ['css/app.css'];
     let scripts = ['vendor.min.js', 'main.min.js'];
     this.write(this.compiled({ styles: styles, scripts: scripts }));
   }
 
   dev() {
-    let styles = [];
+    let styles = ['css/app.css'];
     let scripts = ['vendor.js', 'main.js'];
     this.write(this.compiled({ styles: styles, scripts: scripts }));
   }
