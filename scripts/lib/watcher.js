@@ -3,6 +3,7 @@ const IndexHtml = require('./indexHtml');
 const spawn = require('child_process').spawn;
 const fs = require('fs');
 const path = require('path');
+const sass = require('node-sass');
 
 const rollup = require('rollup');
 const alias = require('rollup-plugin-alias');
@@ -13,12 +14,13 @@ const buble = require('rollup-plugin-buble');
 
 const indexHtml = new IndexHtml();
 
+const mainSass = path.resolve(__dirname, '../../src/styles/app.sass');
+const destCss = path.resolve(__dirname, '../../dist/css/app.css');
 let cache;
 
 class Watcher {
   constructor() {
     this.watcher = chokidar.watch('./src', {
-      ignored: /[\/\\]\./,
       persistent: true
     });
     this.log = console.log.bind(console);
@@ -28,16 +30,15 @@ class Watcher {
     return new Promise(resolve => {
       this.watcher.on('ready', () => {
         this.log(`Starting initial build...`);
-        this.generateHtml()
-        .then(() => {
-          this.buildVendor()
-          .then(vendorTime => {
-            this.build()
-            .then(time => {
-              this.log(`Initial build completed in ${vendorTime + time}ms. Ready for changes.`);
-              this.onChange();
-              resolve();
-            });
+        this.copy().then(() => this.generateHtml())
+        .then(() => this.buildSass())
+        .then(() => this.buildVendor())
+        .then(vendorTime => {
+          this.build()
+          .then(time => {
+            this.log(`Initial build completed in ${vendorTime + time}ms. Ready for changes.`);
+            this.onChange();
+            resolve();
           });
         });
       });
@@ -46,11 +47,24 @@ class Watcher {
 
   onChange() {
     this.watcher.on('change', (file, stats) => {
-      this.log(`${file} changed. Rebuilding...`);
-      if (path.extname(file) === '.html') { cache = null; }
-      this.build().then(time => {
-        this.log(`Built in ${time}ms.`);
-      });
+      let extname = path.extname(file);
+
+      if (extname === '.html') { cache = null; }
+      if (extname !== '.ts' && extname !== '.html' && extname !== '.sass') {
+        this.log(`${file} changed. Copying...`);
+        this.copy().then(() => {
+          this.log(`Files copied.`);
+        });
+      } else if (extname === '.sass' || extname === '.scss') {
+        this.buildSass().then(time => {
+          return;
+        });
+      } else {
+        this.log(`${file} changed. Rebuilding...`);
+        this.build().then(time => {
+          this.log(`Built in ${time}ms.`);
+        });
+      }
     });
   }
 
@@ -145,6 +159,35 @@ class Watcher {
           let timeDiff = endTime - startTime;
           resolve(timeDiff);
         });
+      }
+    });
+  }
+
+  copy() {
+    return new Promise(resolve => {
+      let copyPublic = spawn('npm', ['run', 'copy']);
+      copyPublic.on('close', data => {
+        resolve();
+      });
+    });
+  }
+
+  buildSass() {
+    let startTime = new Date();
+
+    return new Promise(resolve => {
+      try {
+        fs.accessSync(mainSass);  
+        let result = sass.renderSync({
+          file: mainSass
+        });
+        fs.writeFileSync(destCss, result.css);
+        let endTime = new Date();
+        let timeDiff = endTime - startTime;
+        this.log(`SASS built in ${timeDiff}ms`);
+        resolve();
+      } catch (e) {
+        resolve();
       }
     });
   }
