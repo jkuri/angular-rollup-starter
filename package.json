@@ -11,7 +11,7 @@
     "build:main": "rollup -c config/rollup.main.config.js",
     "minify": "npm run minify:vendor && npm run minify:main",
     "minify:vendor": "uglifyjs dist/vendor.js --screw-ie8 --compress --mangle --output dist/vendor.min.js &>/dev/null && gzip -f -k -9 dist/vendor.min.js && rm dist/vendor.js*",
-    "minify:main": "uglifyjs dist/main.js --screw-ie8 --compress --mangle --output dist/main.min.js &>/dev/null && gzip -f -k -9 dist/main.min.js && rm dist/main.js*",
+    "minify:main": "uglifyjs dist/main.js --screw-ie8 --compress --output dist/main.min.js &>/dev/null && gzip -f -k -9 dist/main.min.js && rm dist/main.js*",
     "index:prod": "mkdir -p dist/ && node ./scripts/generate prod",
     "index:dev": "mkdir -p dist/ && node ./scripts/generate dev",
     "copy": "cp -rf public/* dist/",

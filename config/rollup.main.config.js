@@ -4,6 +4,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import angular from 'rollup-plugin-angular';
 import ts from 'rollup-plugin-typescript';
 import buble from 'rollup-plugin-buble';
+import istanbul from 'rollup-plugin-istanbul';
 
 export default {
   entry: 'src/main.ts',
@@ -25,7 +26,10 @@ export default {
     }),
     resolve({ jsnext: true, main: true, browser: true }),
     buble({
-      exclude: 'node_modules/**'
+      transforms: { dangerousForOf: true }
+    }),
+    istanbul({
+      exclude: 'node_modules/**/*'
     })
   ],
   external: [
@@ -35,7 +39,7 @@ export default {
     '@angular/platform-browser',
     '@angular/forms',
     '@angular/http',
-    '@angular/router',
+    '@angular/router'
   ],
   globals: {
     '@angular/core': 'vendor._angular_core',

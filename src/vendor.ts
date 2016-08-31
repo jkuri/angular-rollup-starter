@@ -13,7 +13,7 @@ import * as _angular_router from '@angular/router';
 import * as _angular_forms from '@angular/forms';
 
 // RxJS
-import 'rxjs/Rx';
+import * as rxjs from 'rxjs/Rx';
 
 export default {
   _angular_core,
@@ -22,5 +22,6 @@ export default {
   _angular_platformBrowserDynamic,
   _angular_http,
   _angular_router,
-  _angular_forms
+  _angular_forms,
+  rxjs
 };
