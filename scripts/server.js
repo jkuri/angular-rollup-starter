@@ -1,3 +1,5 @@
+'use strict';
+
 const browserSync = require('browser-sync');
 const Watcher = require('./lib/watcher');
 const fallback = require('connect-history-api-fallback');

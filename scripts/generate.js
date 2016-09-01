@@ -1,4 +1,6 @@
-const IndexHtml = require('./lib/IndexHtml');
+'use strict';
+
+const IndexHtml = require('./lib/indexHtml');
 const arg = process.argv[2];
 
 if (!arg && (arg !== 'prod' || arg !== 'dev')) {

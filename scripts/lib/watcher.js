@@ -1,3 +1,5 @@
+'use strict';
+
 const chokidar = require('chokidar');
 const IndexHtml = require('./indexHtml');
 const spawn = require('child_process').spawn;

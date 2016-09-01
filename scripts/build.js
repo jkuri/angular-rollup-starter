@@ -1,3 +1,5 @@
+'use strict';
+
 const Watcher = require('./lib/watcher');
 const watcher = new Watcher();
 
