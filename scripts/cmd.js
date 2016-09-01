@@ -25,6 +25,7 @@ const generateHtml = require('./lib/generate_html');
 const copy = require('./lib/copy');
 const css = require('./lib/css');
 const server = require('./lib/server');
+const minify = require('./lib/minify');
 const tree = require('nodetree');
 
 const args = process.argv.slice(2);
@@ -91,6 +92,38 @@ if (args[0] === 'generate' || args[0] === 'g') {
   }
 }
 
+if (args[0] === 'minify' || args[0] === 'uglify') {
+  switch (args[1]) {
+    case 'main':
+      minify.main().subscribe(data => {
+        console.log(data)
+      }, err => {
+        console.log(err);
+      }, () => {
+        console.log('Done.');
+      });
+      break;
+    case 'vendor':
+      minify.vendor().subscribe(data => {
+        console.log(data)
+      }, err => {
+        console.log(err);
+      }, () => {
+        console.log('Done.');
+      });
+      break;
+    default:
+      minify.all().subscribe(data => {
+        console.log(data)
+      }, err => {
+        console.log(err);
+      }, () => {
+        console.log('Done.');
+      });
+      break;
+  }
+}
+
 if (args[0] === 'serve' || args[0] === 'server' || args[0] === 's') {
   const cmd = new server.Server();
   cmd.watch.subscribe(data => {
@@ -113,9 +146,10 @@ if (args[0] === 'dist') {
 
   clean.clean()
   .concat(copy.copyPublic())
-  .concat(generateHtml.generateDev())
+  .concat(generateHtml.generateProd())
   .concat(css.compileSass(sassSrc, cssDest))
-  .concat(cmdBuild.buildAll).subscribe(data => {
+  .concat(cmdBuild.buildAll)
+  .concat(minify.all()).subscribe(data => {
     console.log(data);
   }, err => {
     throw new Error(err);
@@ -124,6 +158,6 @@ if (args[0] === 'dist') {
     console.log('-------------------------------------------------------');
     tree(path.resolve(__dirname, '../dist'));
     console.log('-------------------------------------------------------');
-    console.log(`Project generated in approximately ${time}ms.`);
+    console.log(`Project generated in ${time}ms.`);
   });
 }
