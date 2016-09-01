@@ -1,5 +1,6 @@
 'use strict';
 
+const path = require('path');
 const fs = require('fs');
 const ts = require('typescript');
 
@@ -20,6 +21,11 @@ require.extensions['.ts'] = function(m, filename) {
 
 const build = require('./lib/build');
 const clean = require('./lib/clean');
+const generateHtml = require('./lib/generate_html');
+const copy = require('./lib/copy');
+const css = require('./lib/css');
+const server = require('./lib/server');
+const tree = require('nodetree');
 
 const args = process.argv.slice(2);
 
@@ -27,7 +33,7 @@ if (args[0] === 'build' || args[0] === 'b') {
   const cmd = new build.Build();
 
   switch (args[1]) {
-    case 'main': {
+    case 'main':
       cmd.buildMain.subscribe(data => {
         console.info(data);
       }, err => {
@@ -36,8 +42,7 @@ if (args[0] === 'build' || args[0] === 'b') {
         console.log('Done.');
       });
       break;
-    }
-    case 'vendor': {
+    case 'vendor':
       cmd.buildVendor.subscribe(data => {
         console.info(data);
       }, err => {
@@ -46,8 +51,7 @@ if (args[0] === 'build' || args[0] === 'b') {
         console.log('Done.');
       });
       break;
-    }
-    default: {
+    default:
       let start;
       cmd.buildAll.subscribe(data => {
         console.info(data);
@@ -56,7 +60,7 @@ if (args[0] === 'build' || args[0] === 'b') {
       }, () => {
         console.log('Done.');
       });
-    }
+      break;
   }
 }
 
@@ -70,3 +74,56 @@ if (args[0] === 'clean') {
   });
 }
 
+if (args[0] === 'generate' || args[0] === 'g') {
+  switch (args[1]) {
+    case 'dev':
+      generateHtml.generateDev().subscribe(data => console.log(data));
+      console.log('Done.');
+      break;
+    case 'prod':
+      generateHtml.generateProd().subscribe(data => console.log(data));
+      console.log('Done.');
+      break;
+    default:
+      generateHtml.generateProd().subscribe(data => console.log(data));
+      console.log('Done.');
+      break;
+  }
+}
+
+if (args[0] === 'serve' || args[0] === 'server' || args[0] === 's') {
+  const cmd = new server.Server();
+  cmd.watch.subscribe(data => {
+    console.log(data);
+  }, err => {
+    throw new Error(err);
+  }, () => {
+    console.log('Done.');
+  });
+}
+
+if (args[0] === 'dist') {
+  const cmdBuild = new build.Build();
+  const sassSrc = path.resolve(__dirname, '../src/styles/app.sass');
+  const cssDest = path.resolve(__dirname, '../dist/css/app.css');
+  
+  let start = new Date();
+  console.log('Prepairing project for production, please wait...');
+  console.log('-------------------------------------------------------');
+
+  clean.clean()
+  .concat(copy.copyPublic())
+  .concat(generateHtml.generateDev())
+  .concat(css.compileSass(sassSrc, cssDest))
+  .concat(cmdBuild.buildAll).subscribe(data => {
+    console.log(data);
+  }, err => {
+    throw new Error(err);
+  }, () => {
+    let time = new Date().getTime() - start.getTime();
+    console.log('-------------------------------------------------------');
+    tree(path.resolve(__dirname, '../dist'));
+    console.log('-------------------------------------------------------');
+    console.log(`Project generated in approximately ${time}ms.`);
+  });
+}

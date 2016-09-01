@@ -4,19 +4,13 @@
   "description": "Angular2 Starter based on Rollup",
   "main": "server.js",
   "scripts": {
-    "roll": "npm run clean && npm run build && npm run minify && npm run index:prod && npm run copy && npm run tree",
-    "clean": "rm -rf dist/",
-    "build": "node ./scripts/build.js",
-    "build:vendor": "rollup -c config/rollup.vendor.config.js",
-    "build:main": "rollup -c config/rollup.main.config.js",
-    "minify": "npm run minify:vendor && npm run minify:main",
-    "minify:vendor": "uglifyjs dist/vendor.js --screw-ie8 --compress --mangle --output dist/vendor.min.js &>/dev/null && gzip -f -k -9 dist/vendor.min.js && rm dist/vendor.js*",
-    "minify:main": "uglifyjs dist/main.js --screw-ie8 --compress --output dist/main.min.js &>/dev/null && gzip -f -k -9 dist/main.min.js && rm dist/main.js*",
-    "index:prod": "mkdir -p dist/ && node ./scripts/generate prod",
-    "index:dev": "mkdir -p dist/ && node ./scripts/generate dev",
-    "copy": "mkdir -p dist/ && cp -rf public/* dist/ && mkdir -p dist/css && find src/styles/ -name \"*.css\" -type f -exec cp -f {} dist/css/ \\;",
-    "tree": "nodetree dist/",
-    "serve": "node ./scripts/server.js"
+    "roll": "node ./scripts/cmd.js dist",
+    "clean": "node ./scripts/cmd.js clean",
+    "build": "node ./scripts/cmd.js build",
+    "build:vendor": "node ./scripts/cmd.js build vendor",
+    "build:main": "node ./scripts/cmd.js build main",
+    "copy": "node ./scripts/cmd.js copy",
+    "serve": "node ./scripts/cmd.js serve"
   },
   "repository": {
     "type": "git",
@@ -49,7 +43,9 @@
     "zone.js": "^0.6.17"
   },
   "devDependencies": {
+    "@types/browser-sync": "0.0.32",
     "@types/fs-extra": "0.0.31",
+    "@types/lodash": "^4.14.34",
     "@types/node": "^6.0.38",
     "browser-sync": "^2.14.0",
     "chokidar": "^1.6.0",

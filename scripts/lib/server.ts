@@ -1,0 +1,92 @@
+import * as path from 'path';
+import * as browserSync from 'browser-sync';
+import * as fallback from 'connect-history-api-fallback';
+import * as chokidar from 'chokidar';
+import { Observable } from 'rxjs';
+import { clean } from './clean';
+import { generateDev } from './generate_html';
+import { copyPublic } from './copy';
+import { Build } from './build';
+import { compileSass } from './css';
+
+export class Server {
+  private options: any;
+  private builder: Build;
+
+  constructor() {
+    this.options = {
+      port: 4200,
+      server: path.resolve(__dirname, '../../dist'),
+      files: ['./dist/**/*'],
+      middleware: [
+        fallback({
+          index: '/index.html'
+        })
+      ]
+    };
+
+    this.builder = new Build();
+  }
+
+  startServer() {
+    browserSync(this.options);
+  }
+
+  get watch(): Observable<any> {
+    return new Observable(observer => {
+      const sassSrc = path.resolve(__dirname, '../../src/styles/app.sass');
+      const cssDest = path.resolve(__dirname, '../../dist/css/app.css');
+
+      const watcher = chokidar.watch(path.resolve(__dirname, '../../src'), {
+        persistent: true
+      });
+
+      const publicWatcher = chokidar.watch(path.resolve(__dirname, '../../public'), {
+        persistent: true
+      });
+
+      watcher.on('ready', () => {
+        observer.next(`Starting...`);
+
+        clean()
+        .concat(copyPublic())
+        .concat(generateDev())
+        .concat(compileSass(sassSrc, cssDest))
+        .concat(this.builder.buildAll).subscribe(data => {
+          observer.next(data);
+        }, err => {
+          throw new Error(err);
+        }, () => {
+          this.startServer();
+          watcher.on('change', (file, stats) => {
+            let ext: string = path.extname(file);
+            let basename: string = path.basename(file);
+            observer.next(`${basename} changed...`);
+            switch (ext) {
+              case '.html':
+                if (basename === 'index.html') {
+                  generateDev();
+                } else {
+                  this.builder.cache = null;
+                  this.builder.buildMain.subscribe(data => { observer.next(data); });
+                }
+                break;
+              case '.ts':
+                this.builder.buildMain.subscribe(data => { observer.next(data); });
+                break;
+              case '.sass':
+                compileSass(sassSrc, cssDest).subscribe(data => { observer.next(data); });
+                break;
+              default:
+                break;
+            }
+          });
+        });
+      });
+
+      publicWatcher.on('change', () => {
+        copyPublic().subscribe(data => { console.log(data); });
+      });
+    });
+  }
+}
