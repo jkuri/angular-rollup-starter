@@ -6,7 +6,7 @@
   "scripts": {
     "roll": "npm run clean && npm run build && npm run minify && npm run index:prod && npm run copy && npm run tree",
     "clean": "rm -rf dist/",
-    "build": "npm run build:vendor && npm run build:main",
+    "build": "node ./scripts/build.js",
     "build:vendor": "rollup -c config/rollup.vendor.config.js",
     "build:main": "rollup -c config/rollup.main.config.js",
     "minify": "npm run minify:vendor && npm run minify:main",

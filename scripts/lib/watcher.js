@@ -45,6 +45,22 @@ class Watcher {
     });
   }
 
+  initBuild() {
+    return new Promise(resolve => {
+      this.copy().then(() => this.generateHtml())
+      .then(() => this.buildSass())
+      .then(() => this.buildVendor())
+      .then(vendorTime => {
+        this.build()
+        .then(time => {
+          let seconds = ((vendorTime + time) / 1000) % 60;
+          this.log(`Build completed in ${seconds}s.`);
+          resolve();
+        });
+      });
+    });
+  }
+
   onChange() {
     this.watcher.on('change', (file, stats) => {
       let extname = path.extname(file);
@@ -140,6 +156,11 @@ class Watcher {
           let timeDiff = endTime - startTime;
           resolve(timeDiff);
         });
+      }, err => {
+        process.emit('compileError', JSON.stringify(err));
+      })
+      .catch(err => {
+        console.log(err);
       });
     });
   }
