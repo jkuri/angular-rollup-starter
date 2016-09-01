@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as uglifyjs from 'uglify-js';
+import * as zlib from 'zlib';
 import { Observable } from 'rxjs';
 
 export function all(): Observable<any[]> {
@@ -20,6 +21,7 @@ function minify(srcFile: string, destFile: string, sourceMapFile: string): Obser
   const srcSourceMapPath: string = path.resolve(__dirname, `../../dist/${srcFile}.map`);
   const destPath: string = path.resolve(__dirname, `../../dist/${destFile}`);
   const sourceMapDest: string = path.resolve(__dirname, `../../dist/${sourceMapFile}`);
+  const gzipDest: string = path.resolve(__dirname, `../../dist/${destFile}.gz`);
 
   return new Observable(observer => {
     if (!fs.existsSync(srcPath)) {
@@ -43,17 +45,22 @@ function minify(srcFile: string, destFile: string, sourceMapFile: string): Obser
           fs.unlinkSync(srcPath);
           fs.unlinkSync(srcSourceMapPath);
 
+          fs.outputFileSync(gzipDest, zlib.gzipSync(result.code, { level: 9 }));
+
           const destStats: any = fs.statSync(destPath);
           const sourceMapStats: any = fs.statSync(sourceMapDest);
+          const gzipStats: any = fs.statSync(gzipDest);
           const sizes: any = {
             'src': formatBytes(srcStats.size, 2),
             'dest': formatBytes(destStats.size, 2),
-            'map': formatBytes(sourceMapStats.size, 2)
+            'map': formatBytes(sourceMapStats.size, 2),
+            'gzip': formatBytes(gzipStats.size, 2)
           };
 
           let output = '-------------------------------------------------------\n';
           output += `${srcFile} (${sizes['src']})\n${destFile} (${sizes['dest']})\n`;
-          output += `${sourceMapFile} (${sizes['map']})`;
+          output += `${sourceMapFile} (${sizes['map']})\n`;
+          output += `${destFile}.gz (${sizes['gzip']})`;
 
           observer.next(output);
           observer.complete();

@@ -9,6 +9,7 @@
     "build": "node ./scripts/cmd.js build",
     "build:vendor": "node ./scripts/cmd.js build vendor",
     "build:main": "node ./scripts/cmd.js build main",
+    "minify": "node ./scripts/cmd.js minify",
     "copy": "node ./scripts/cmd.js copy",
     "serve": "node ./scripts/cmd.js serve"
   },
