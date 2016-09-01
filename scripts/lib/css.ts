@@ -16,7 +16,7 @@ export function compileSass(srcPath: string, destPath: string): Observable<any> 
         observer.error(err);
       }
 
-      fs.outputFile(result.css, destPath, writeErr => {
+      fs.outputFile(destPath, result.css, writeErr => {
         if (writeErr) {
           observer.error(err);
         }
