@@ -3,7 +3,6 @@ import alias from 'rollup-plugin-alias';
 import resolve from 'rollup-plugin-node-resolve';
 import angular from 'rollup-plugin-angular';
 import ts from 'rollup-plugin-typescript';
-import istanbul from 'rollup-plugin-istanbul';
 import buble from 'rollup-plugin-buble';
 
 export default {
@@ -27,9 +26,6 @@ export default {
     resolve({ jsnext: true, main: true, browser: true }),
     buble({
       transforms: { dangerousForOf: true }
-    }),
-    istanbul({
-      exclude: 'node_modules/**/*'
     })
   ]
 }

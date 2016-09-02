@@ -3,7 +3,6 @@
 const path = require('path');
 const ts = require('rollup-plugin-typescript');
 const buble = require('rollup-plugin-buble');
-const istanbul = require('rollup-plugin-istanbul');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const alias = require('rollup-plugin-alias');
 const angular = require('rollup-plugin-angular');
