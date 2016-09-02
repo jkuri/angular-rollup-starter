@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1796022/18214613/233a34c6-714e-11e6-9c39-7b87c87fef2a.png" alt="Angular2 + Rollupjs" width="500px" height="300px">
+  <img src="https://cloud.githubusercontent.com/assets/1796022/18214723/88e68946-714e-11e6-9f46-cc9113454222.png" alt="Angular2 + Rollupjs" width="500px" height="300px">
 </p>
 
 # Angular2 Rollup Seed
