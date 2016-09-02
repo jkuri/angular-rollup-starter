@@ -1,13 +1,12 @@
+<p align="center">
+  <img src="https://cloud.githubusercontent.com/assets/1796022/18214613/233a34c6-714e-11e6-9c39-7b87c87fef2a.png" alt="Angular2 + Rollupjs" width="500px" height="300px">
+</p>
+
 # Angular2 Rollup Seed
 
-Yet another Angular2 seed, but this one based on Rollup and BrowserSync.
+Angular2 starter seed based on Rollup and BrowserSync. 
 
-***Note*** First initial load takes some time so vendor files are generated. 
-Then it runs like a charm with incremental builds which takes about 60ms-100ms.
-
-## Usage
-
-### Install
+## Start
 
 First, clone this repository.
 
@@ -21,16 +20,29 @@ Move into cloned directory and run
 npm install
 ```
 
+## Usage
+
 ### Serve
 
 ```sh
 npm run serve
 ```
 
-This command serves your app with live-reload enabled.
+***Note*** Initial load takes some time so vendor files are generated. 
+Then it runs like a charm with cached builds which happens to be really fast.
+
+This serves your app with live-reload enabled.
 
 ### Production Build
 
 ```sh
 npm run roll
 ```
+
+### 
+
+### SASS Support
+
+This starter comes with integrated SASS support. Just rename `src/styles/app.css` to `src/styles/app.sass` 
+and that file will serves as the entry point. Any other `.sass` files should be imported into main `app.sass`.
+This is hardcoded for now, but can change in the future for more flexible style alignement.
