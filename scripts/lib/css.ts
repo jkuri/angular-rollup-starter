@@ -13,13 +13,16 @@ export function compileSass(srcPath: string, destPath: string): Observable<any> 
     let start: Date = new Date();
     sass.render({ file: srcPath }, (err, result) => {
       if (err) {
-        observer.error(err);
+        observer.next(err);
         observer.complete();
+        return;
       }
 
       fs.outputFile(destPath, result.css, writeErr => {
         if (writeErr) {
-          observer.error(err);
+          observer.next(err);
+          observer.complete();
+          return;
         }
 
         let time: number = new Date().getTime() - start.getTime();

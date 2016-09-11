@@ -46,9 +46,11 @@
   },
   "devDependencies": {
     "@types/browser-sync": "0.0.32",
+    "@types/fs-extra": "0.0.31",
     "@types/jasmine": "^2.2.33",
     "@types/lodash": "^4.14.34",
     "@types/node": "^6.0.38",
+    "@types/node-sass": "0.0.28",
     "browser-sync": "^2.14.0",
     "chokidar": "^1.6.0",
     "codelyzer": "0.0.28",
