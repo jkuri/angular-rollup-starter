@@ -55,7 +55,7 @@ export class Server {
         .concat(this.builder.buildAll).subscribe(data => {
           observer.next(data);
         }, err => {
-          throw new Error(err);
+          console.log(err);
         }, () => {
           this.startServer();
           watcher.on('change', (file, stats) => {

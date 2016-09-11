@@ -14,6 +14,7 @@ export function compileSass(srcPath: string, destPath: string): Observable<any> 
     sass.render({ file: srcPath }, (err, result) => {
       if (err) {
         observer.error(err);
+        observer.complete();
       }
 
       fs.outputFile(destPath, result.css, writeErr => {
