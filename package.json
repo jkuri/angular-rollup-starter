@@ -28,9 +28,9 @@
   "author": "Jan Kuri <jkuri88@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jkuri/angular2-rollup-seed/issues"
+    "url": "https://github.com/jkuri/angular2-rollup-starter/issues"
   },
-  "homepage": "https://github.com/jkuri/angular2-rollup-seed#readme",
+  "homepage": "https://github.com/jkuri/angular2-rollup-starter#readme",
   "dependencies": {
     "@angular/common": "2.0.0",
     "@angular/compiler": "2.0.0",
@@ -56,13 +56,13 @@
     "codelyzer": "0.0.28",
     "connect-history-api-fallback": "^1.3.0",
     "fs-extra": "^0.30.0",
-    "jasmine": "^2.5.0",
+    "jasmine": "^2.5.1",
     "karma": "^1.2.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-rollup-plugin": "^0.2.2",
     "lodash": "^4.15.0",
-    "node-sass": "^3.8.0",
+    "node-sass": "^3.10.0",
     "nodetree": "0.0.3",
     "reflect-metadata": "^0.1.8",
     "rollup": "^0.35.10",
