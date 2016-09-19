@@ -6,7 +6,6 @@ import * as angular from 'rollup-plugin-angular';
 import * as ts from 'rollup-plugin-typescript';
 import * as buble from 'rollup-plugin-buble';
 import { Observable } from 'rxjs';
-import { spawn } from 'child_process';
 
 export class Build {
   public cache: any;
@@ -85,18 +84,58 @@ export class Build {
   };
 
   get buildVendor(): Observable<any> {
-    const config = path.resolve(__dirname, '../../config/rollup.vendor.config.js');
-
     return Observable.create(observer => {
       let start: Date = new Date();
-      const ps = spawn('rollup', `-c ${config}`.split(/ /));
-      ps.stdout.on('data', data => observer.next(data));
-      ps.stderr.on('data', data => observer.next(data));
-      ps.on('close', code => {
-        let time: number = new Date().getTime() - start.getTime();
-        console.log(`Build time (vendor): ${time}ms`);
-        observer.complete(code);
+      this.vendorBuilder.subscribe(bundle => {
+        this.cache = bundle;
+        Observable.fromPromise(bundle.write({
+          format: 'iife',
+          dest: path.resolve(__dirname, '../../dist/vendor.js'),
+          sourceMap: true,
+          moduleName: 'vendor',
+          useStrict: false
+        })).subscribe(resp => {
+          let time: number = new Date().getTime() - start.getTime();
+          observer.next(`Build time (vendor): ${time}ms`);
+          observer.complete();
+        });
+      }, err => {
+        console.error(`Compile error: ${err}`);
+        observer.complete();
       });
     });
   };
+
+  get vendorBuilder(): Observable<any> {
+    return Observable.fromPromise(rollup.rollup({
+      entry: path.resolve(__dirname, '../../src/vendor.ts'),
+      context: 'this',
+      plugins: [
+	    rollupNG2(),
+        angular({
+          exclude: '../../node_modules/**'
+        }),
+        ts({
+          typescript: require('../../node_modules/typescript')
+        }),
+        nodeResolve({ jsnext: true, main: true, browser: true }),
+        buble({
+          exclude: '../../node_modules/**'
+        })
+      ]
+    }));
+  };
 }
+
+class RollupNG2 {
+  constructor(options) {
+    this.options = options;
+  }
+  resolveId(id, from) {
+    if (id.startsWith('rxjs/')) {
+      return `${__dirname}/../../node_modules/rxjs-es/${id.replace('rxjs/', '')}.js`;
+    }
+  }
+}
+
+const rollupNG2 = (config) => new RollupNG2(config);
