@@ -161,3 +161,10 @@ if (args[0] === 'dist') {
     console.log(`Project generated in ${time}ms.`);
   });
 }
+
+module.exports.build = build;
+module.exports.clean = clean;
+module.exports.generateHtml = generateHtml;
+module.exports.copy = copy;
+module.exports.css = css;
+module.exports.minify = minify;
