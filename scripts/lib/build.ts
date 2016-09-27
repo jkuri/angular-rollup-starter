@@ -7,6 +7,22 @@ import * as ts from 'rollup-plugin-typescript';
 import * as buble from 'rollup-plugin-buble';
 import { Observable } from 'rxjs';
 
+class RollupNG2 {
+  private options: any;
+
+  constructor(options) {
+    this.options = options;
+  }
+
+  resolveId(id, from): any {
+    if (id.startsWith('rxjs/')) {
+      return `${__dirname}/../../node_modules/rxjs-es/${id.replace('rxjs/', '')}.js`;
+    }
+  }
+}
+
+const rollupNG2 = (config) => new RollupNG2(config);
+
 export class Build {
   public cache: any;
   private building: boolean;
@@ -111,7 +127,7 @@ export class Build {
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
       context: 'this',
       plugins: [
-	    rollupNG2(),
+        rollupNG2(),
         angular({
           exclude: '../../node_modules/**'
         }),
@@ -126,16 +142,3 @@ export class Build {
     }));
   };
 }
-
-class RollupNG2 {
-  constructor(options) {
-    this.options = options;
-  }
-  resolveId(id, from) {
-    if (id.startsWith('rxjs/')) {
-      return `${__dirname}/../../node_modules/rxjs-es/${id.replace('rxjs/', '')}.js`;
-    }
-  }
-}
-
-const rollupNG2 = (config) => new RollupNG2(config);
