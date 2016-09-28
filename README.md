@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1796022/18933885/1d9ee578-85d7-11e6-8e17-1451bd97a450.png" alt="Angular2 + Rollupjs" width="500px" height="300px">
+  <img src="https://cloud.githubusercontent.com/assets/1796022/18933885/1d9ee578-85d7-11e6-8e17-1451bd97a450.png" alt="Angular2 + Rollupjs" width="600px" height="300px">
 </p>
 
 [![Build Status](https://travis-ci.org/jkuri/angular2-rollup-starter.svg?branch=master)](https://travis-ci.org/jkuri/angular2-rollup-starter)
