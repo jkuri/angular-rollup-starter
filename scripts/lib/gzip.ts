@@ -10,7 +10,7 @@ export function app(): Observable<any> {
 function gzip(srcFile: string, gzipFile: string): Observable<any> {
   const srcPath: string = path.resolve(__dirname, `../../dist/${srcFile}`);
   const srcMapPath: string = path.resolve(__dirname, `../../dist/${srcFile}.map`);
-  const gzipDest: string = path.resolve(__dirname, `../../dist/${gzipFile}.gz`);
+  const gzipDest: string = path.resolve(__dirname, `../../dist/${gzipFile}`);
 
   return new Observable(observer => {
     if (!fs.existsSync(srcPath)) {

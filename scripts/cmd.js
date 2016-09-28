@@ -3,6 +3,7 @@
 const path = require('path');
 const fs = require('fs');
 const ts = require('typescript');
+const chalk = require('chalk');
 
 require.extensions['.ts'] = function(m, filename) {
   const source = fs.readFileSync(filename).toString();
@@ -58,7 +59,7 @@ if (args[0] === 'build' || args[0] === 'b') {
 }
 
 if (args[0] === 'clean') {
-  clean.clean().subscribe(data => {
+  clean.clean('dist').subscribe(data => {
     console.info(data);
   }, err => {
     throw new Error(err);
@@ -98,24 +99,26 @@ if (args[0] === 'dist') {
   const cssDest = path.resolve(__dirname, '../dist/css/app.css');
   
   let start = new Date();
-  console.log('Preparing project for production, please wait...');
-  console.log('-------------------------------------------------------');
+  console.log(chalk.blue('Preparing project for production, please wait...'));
+  console.log(chalk.yellow('-------------------------------------------------------'));
 
-  clean.clean()
+  clean.clean('dist')
   .concat(copy.copyPublic())
   .concat(generateHtml.generate())
   .concat(css.compileSass(sassSrc, cssDest))
   .concat(cmdBuild.buildProd)
+  .concat(clean.clean('dist/src'))
+  .concat(clean.clean('aot'))
   .concat(gzip.app()).subscribe(data => {
     console.log(data);
   }, err => {
     throw new Error(err);
   }, () => {
     let time = new Date().getTime() - start.getTime();
-    console.log('-------------------------------------------------------');
+    console.log(chalk.yellow('-------------------------------------------------------'));
     tree(path.resolve(__dirname, '../dist'));
-    console.log('-------------------------------------------------------');
-    console.log(`Project generated in ${time}ms.`);
+    console.log(chalk.yellow('-------------------------------------------------------'));
+    console.log(chalk.green(`Project generated in ${time}ms.`));
   });
 }
 

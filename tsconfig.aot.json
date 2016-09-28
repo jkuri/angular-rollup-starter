@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "es6"],
-    "target": "es5",
+    "target": "es2015",
     "module": "es2015",
     "moduleResolution": "node",
     "declaration": false,
@@ -23,7 +23,7 @@
     ]
   },
   "files": [
-    "src/main.aot.ts"
+    "src/main.ts"
   ],
   "angularCompilerOptions": {
     "genDir": "aot",
