@@ -35,6 +35,15 @@ export class Build {
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/main.js'),
           sourceMap: true,
+          globals: {
+            '@angular/core': 'vendor._angular_core',
+            '@angular/common': 'vendor._angular_common',
+            '@angular/platform-browser': 'vendor._angular_platformBrowser',
+            '@angular/platform-browser-dynamic': 'vendor._angular_platformBrowserDynamic',
+            '@angular/router': 'vendor._angular_router',
+            '@angular/http': 'vendor._angular_http',
+            '@angular/forms': 'vendor._angular_forms'
+          }
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           observer.next(chalk.magenta(`Build time (main): ${time}ms`));
@@ -64,6 +73,15 @@ export class Build {
         }),
         nodeResolve({ jsnext: true, main: true, browser: true }),
         buble()
+      ],
+      external: [
+        '@angular/core',
+        '@angular/common',
+        '@angular/platform-browser-dynamic',
+        '@angular/platform-browser',
+        '@angular/forms',
+        '@angular/http',
+        '@angular/router',
       ]
     }));
   };
