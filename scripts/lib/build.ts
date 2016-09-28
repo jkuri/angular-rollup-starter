@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+import * as chalk from 'chalk';
 import * as rollup from 'rollup';
 import * as commonjs from 'rollup-plugin-commonjs';
 import * as nodeResolve from 'rollup-plugin-node-resolve';
@@ -22,17 +23,21 @@ export class Build {
   }
 
   get buildDev(): Observable<any> {
+    return this.buildDevMain.concat(this.buildDevVendor);
+  }
+
+  get buildDevMain(): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
-      this.devBuilder.subscribe(bundle => {
+      this.devMainBuilder.subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
           format: 'iife',
-          dest: path.resolve(__dirname, '../../dist/app.js'),
+          dest: path.resolve(__dirname, '../../dist/main.js'),
           sourceMap: true,
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          observer.next(`Build time: ${time}ms`);
+          observer.next(chalk.magenta(`Build time (main): ${time}ms`));
           observer.complete();
         });
       }, err => {
@@ -42,9 +47,51 @@ export class Build {
     });
   }
 
-  get devBuilder(): Observable<any> {
+  get devMainBuilder(): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
-      entry: path.resolve(__dirname, '../../src/main.aot.ts'),
+      entry: path.resolve(__dirname, '../../src/main.ts'),
+      cache: this.cache,
+      context: 'this',
+      plugins: [
+        angular({
+          exclude: '../../node_modules/**'
+        }),
+        tsr({
+          typescript: require('../../node_modules/typescript')
+        }),
+        commonjs({
+          include: 'node_modules/rxjs/**'
+        }),
+        nodeResolve({ jsnext: true, main: true, browser: true }),
+        buble()
+      ]
+    }));
+  };
+
+  get buildDevVendor(): Observable<any> {
+    return Observable.create(observer => {
+      let start: Date = new Date();
+      this.devVendorBuilder.subscribe(bundle => {
+        this.cache = bundle;
+        Observable.fromPromise(bundle.write({
+          format: 'iife',
+          moduleName: 'vendor',
+          dest: path.resolve(__dirname, '../../dist/vendor.js')
+        })).subscribe(resp => {
+          let time: number = new Date().getTime() - start.getTime();
+          observer.next(chalk.magenta(`Build time (vendor): ${time}ms`));
+          observer.complete();
+        });
+      }, err => {
+        console.error(`Compile error: ${err}`);
+        observer.complete();
+      });
+    });
+  }
+
+  get devVendorBuilder(): Observable<any> {
+    return Observable.fromPromise(rollup.rollup({
+      entry: path.resolve(__dirname, '../../src/vendor.ts'),
       cache: this.cache,
       context: 'this',
       plugins: [

@@ -2,9 +2,10 @@ import * as path from 'path';
 import * as browserSync from 'browser-sync';
 import * as fallback from 'connect-history-api-fallback';
 import * as chokidar from 'chokidar';
+import * as chalk from 'chalk';
 import { Observable } from 'rxjs';
 import { clean } from './clean';
-import { generate } from './generate_html';
+import { generateDev } from './generate_html';
 import { copyPublic } from './copy';
 import { Build } from './build';
 import { compileSass } from './css';
@@ -48,9 +49,9 @@ export class Server {
       watcher.on('ready', () => {
         observer.next(`Starting...`);
 
-        clean()
+        clean('dist')
         .concat(copyPublic())
-        .concat(generate())
+        .concat(generateDev())
         .concat(compileSass(sassSrc, cssDest))
         .concat(this.builder.buildDev).subscribe(data => {
           observer.next(data);
@@ -61,11 +62,11 @@ export class Server {
           watcher.on('change', (file, stats) => {
             let ext: string = path.extname(file);
             let basename: string = path.basename(file);
-            observer.next(`${basename} changed...`);
+            observer.next(chalk.blue(`${basename} changed...`));
             switch (ext) {
               case '.html':
                 if (basename === 'index.html') {
-                  generate().subscribe(data => console.log(data));
+                  generateDev().subscribe(data => console.log(data));
                 } else {
                   this.builder.cache = null;
                   this.builder.buildDev.subscribe(data => { observer.next(data); });

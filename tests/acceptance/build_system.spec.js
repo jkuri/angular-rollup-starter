@@ -34,7 +34,11 @@ describe('Acceptance: Build System', function() {
     cmd.clean.clean('dist').subscribe(() => { }, (err) => {
       throw new Error(err);
     }, () => {
-      done();
+      cmd.clean.clean('aot').subscribe(() => { }, (err) => {
+        throw new Error(err);  
+      }, () => {
+        done();
+      });
     });
   });
 
@@ -42,7 +46,11 @@ describe('Acceptance: Build System', function() {
     cmd.clean.clean('dist').subscribe(() => { }, (err) => {
       throw new Error(err);
     }, () => {
-      done();
+      cmd.clean.clean('aot').subscribe(() => { }, (err) => {
+        throw new Error(err);  
+      }, () => {
+        done();
+      });
     });
   });
 

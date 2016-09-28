@@ -68,10 +68,6 @@ if (args[0] === 'clean') {
   });
 }
 
-if (args[0] === 'generate' || args[0] === 'g') {
-  generateHtml.generate().subscribe(data => console.log(data));
-}
-
 if (args[0] === 'gzip') {
   gzip.app().subscribe(data => {
     console.log(data)
@@ -104,7 +100,7 @@ if (args[0] === 'dist') {
 
   clean.clean('dist')
   .concat(copy.copyPublic())
-  .concat(generateHtml.generate())
+  .concat(generateHtml.generateProd())
   .concat(css.compileSass(sassSrc, cssDest))
   .concat(cmdBuild.buildProd)
   .concat(clean.clean('dist/src'))

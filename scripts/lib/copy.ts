@@ -1,5 +1,6 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
+import * as chalk from 'chalk';
 import { Observable } from 'rxjs';
 
 export function copyPublic(): Observable<any> {
@@ -12,7 +13,7 @@ export function copyPublic(): Observable<any> {
         observer.error(err);
       }
 
-      observer.next(`/public dir successfully copied to ${path.basename(destDir)}.`);
+      observer.next(chalk.green(`/public dir successfully copied to ${path.basename(destDir)}.`));
       observer.complete();
     });
   });
