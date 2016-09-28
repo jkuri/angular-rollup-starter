@@ -1,12 +1,13 @@
 <p align="center">
-  <img src="https://cloud.githubusercontent.com/assets/1796022/18214723/88e68946-714e-11e6-9f46-cc9113454222.png" alt="Angular2 + Rollupjs" width="500px" height="300px">
+  <img src="https://cloud.githubusercontent.com/assets/1796022/18933885/1d9ee578-85d7-11e6-8e17-1451bd97a450.png" alt="Angular2 + Rollupjs" width="500px" height="300px">
 </p>
 
 [![Build Status](https://travis-ci.org/jkuri/angular2-rollup-starter.svg?branch=master)](https://travis-ci.org/jkuri/angular2-rollup-starter)
 
 # Angular2 Rollup Seed
 
-Angular2 starter seed based on Rollup and BrowserSync. 
+Angular2 starter seed based on Rollup and BrowserSync.
+Production builds including AoT steps. 
 
 ## Start
 
@@ -36,6 +37,8 @@ Then it runs like a charm with cached builds which happens to be really fast.
 This serves your app with live-reload enabled.
 
 ### Production Build
+
+Production builds automatically includes AoT (Ahead of Time) compilation steps. 
 
 ```sh
 npm run roll
