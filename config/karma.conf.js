@@ -4,8 +4,9 @@ const path = require('path');
 const ts = require('rollup-plugin-typescript');
 const buble = require('rollup-plugin-buble');
 const nodeResolve = require('rollup-plugin-node-resolve');
-const alias = require('rollup-plugin-alias');
 const angular = require('rollup-plugin-angular');
+const commonjs = require('rollup-plugin-commonjs');
+const alias = require('rollup-plugin-alias');
 
 module.exports = (config) => {
   const configuration = {
@@ -33,16 +34,15 @@ module.exports = (config) => {
           typescript: require('../node_modules/typescript')
         }),
         alias({ 
-          'rxjs': path.resolve(__dirname, '../node_modules/rxjs-es'),
+          rxjs: path.resolve(__dirname, '../node_modules/rxjs-es'),
           '@angular/core/testing': path.resolve(__dirname, '../node_modules/@angular/core/testing/index'),
           '@angular/platform-browser-dynamic/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser-dynamic/testing/index'),
           '@angular/compiler/testing': path.resolve(__dirname, '../node_modules/@angular/compiler/testing/index'),
-          '@angular/platform-browser/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser/testing/index')
+          '@angular/platform-browser/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser/testing/index') 
         }),
+        commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble({
-          transforms: { dangerousForOf: true }
-        })
+        buble()
       ]
     },
     port: 9876,

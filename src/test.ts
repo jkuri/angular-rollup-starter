@@ -12,14 +12,14 @@ import 'zone.js/dist/sync-test';
 import 'zone.js/dist/proxy';
 import 'zone.js/dist/jasmine-patch';
 
-import * as rxjs from 'rxjs/Rx';
+import 'rxjs/Rx';
 
-import * as testing from '@angular/core/testing';
-import * as testingBrowser from '@angular/platform-browser-dynamic/testing';
+import { TestBed } from '@angular/core/testing';
+import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
-testing.TestBed.initTestEnvironment(
-  testingBrowser.BrowserDynamicTestingModule,
-  testingBrowser.platformBrowserDynamicTesting()
+TestBed.initTestEnvironment(
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting()
 );
 
 import './app/app.component.spec';
