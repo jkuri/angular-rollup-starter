@@ -5,6 +5,7 @@ import * as nodeResolve from 'rollup-plugin-node-resolve';
 import * as angular from 'rollup-plugin-angular';
 import * as ts from 'rollup-plugin-typescript';
 import * as buble from 'rollup-plugin-buble';
+import * as uglify from 'rollup-plugin-uglify';
 import { Observable } from 'rxjs';
 
 class RollupNG2 {
@@ -44,15 +45,6 @@ export class Build {
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/main.js'),
           sourceMap: true,
-          globals: {
-            '@angular/core': 'vendor._angular_core',
-            '@angular/common': 'vendor._angular_common',
-            '@angular/platform-browser': 'vendor._angular_platformBrowser',
-            '@angular/platform-browser-dynamic': 'vendor._angular_platformBrowserDynamic',
-            '@angular/router': 'vendor._angular_router',
-            '@angular/http': 'vendor._angular_http',
-            '@angular/forms': 'vendor._angular_forms'
-          }
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           observer.next(`Build time (main): ${time}ms`);
@@ -67,35 +59,23 @@ export class Build {
 
   get mainBuilder(): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
-      entry: path.resolve(__dirname, '../../src/main.ts'),
-        cache: this.cache,
-        plugins: [
-          angular({
-            exclude: '../../node_modules/**'
-          }),
-          ts({
-            typescript: require('../../node_modules/typescript')
-          }),
-          alias({
-            'rxjs': path.resolve(__dirname, '../../node_modules/rxjs-es'),
-            '@angular/core': path.resolve(__dirname, '../../node_modules/@angular/core/esm/index'),
-            '@angular/common': path.resolve(__dirname, '../../node_modules/@angular/common/esm/index'),
-            '@angular/platform-browser-dynamic': path.resolve(__dirname, '../../node_modules/@angular/platform-browser-dynamic/esm/index')
-          }),
-          nodeResolve({ jsnext: true, main: true, browser: true }),
-          buble({
-            exclude: '../../node_modules/**'
-          })
-        ],
-        external: [
-          '@angular/core',
-          '@angular/common',
-          '@angular/platform-browser-dynamic',
-          '@angular/platform-browser',
-          '@angular/forms',
-          '@angular/http',
-          '@angular/router',
-        ]
+      entry: path.resolve(__dirname, '../../src/main.aot.ts'),
+      cache: this.cache,
+      context: 'this',
+      plugins: [
+        angular({
+          exclude: '../../node_modules/**'
+        }),
+        ts({
+          typescript: require('../../node_modules/typescript')
+        }),
+        alias({
+          'rxjs': path.resolve(__dirname, '../../node_modules/rxjs-es')
+        }),
+        nodeResolve({ jsnext: true, main: true, browser: true }),
+        buble(),
+        uglify()
+      ]
     }));
   };
 

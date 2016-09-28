@@ -1,5 +1,6 @@
 import 'core-js/client/shim';
 import 'zone.js/dist/zone';
+import 'reflect-metadata';
 
 import * as _angular_platformBrowser from '@angular/platform-browser';
 import * as _angular_platformBrowserDynamic from '@angular/platform-browser-dynamic';

@@ -13,7 +13,7 @@ export function main(): Observable<any> {
 }
 
 export function vendor(): Observable<any> {
-  return minify('vendor.js', 'vendor.min.js', 'vendor.min.js.map');
+  return minify('shims.js', 'shims.min.js', 'shims.min.js.map');
 }
 
 function minify(srcFile: string, destFile: string, sourceMapFile: string): Observable<any> {
@@ -30,7 +30,8 @@ function minify(srcFile: string, destFile: string, sourceMapFile: string): Obser
     } else {
       const srcStats: any = fs.statSync(srcPath);
       const result: any = uglifyjs.minify(srcPath, {
-        outSourceMap: sourceMapDest
+        outSourceMap: sourceMapDest,
+        sourceRoot: '/'
       });
 
       fs.outputFile(destPath, result.code, err => {
