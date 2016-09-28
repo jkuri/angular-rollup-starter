@@ -11,7 +11,6 @@ env:
   global:
     - DBUS_SESSION_BUS_ADDRESS=/dev/null
   matrix:
-    - SCRIPT=test
     - SCRIPT=test:build-system
 
 before_install:
