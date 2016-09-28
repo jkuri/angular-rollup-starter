@@ -4,7 +4,7 @@ import * as fallback from 'connect-history-api-fallback';
 import * as chokidar from 'chokidar';
 import { Observable } from 'rxjs';
 import { clean } from './clean';
-import { generateDev } from './generate_html';
+import { generate } from './generate_html';
 import { copyPublic } from './copy';
 import { Build } from './build';
 import { compileSass } from './css';
@@ -50,9 +50,9 @@ export class Server {
 
         clean()
         .concat(copyPublic())
-        .concat(generateDev())
+        .concat(generate())
         .concat(compileSass(sassSrc, cssDest))
-        .concat(this.builder.buildAll).subscribe(data => {
+        .concat(this.builder.buildDev).subscribe(data => {
           observer.next(data);
         }, err => {
           console.log(err);
@@ -65,14 +65,14 @@ export class Server {
             switch (ext) {
               case '.html':
                 if (basename === 'index.html') {
-                  generateDev();
+                  generate().subscribe(data => console.log(data));
                 } else {
                   this.builder.cache = null;
-                  this.builder.buildMain.subscribe(data => { observer.next(data); });
+                  this.builder.buildDev.subscribe(data => { observer.next(data); });
                 }
                 break;
               case '.ts':
-                this.builder.buildMain.subscribe(data => { observer.next(data); });
+                this.builder.buildDev.subscribe(data => { observer.next(data); });
                 break;
               case '.sass':
                 compileSass(sassSrc, cssDest).subscribe(data => { observer.next(data); });

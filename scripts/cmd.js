@@ -25,7 +25,7 @@ const generateHtml = require('./lib/generate_html');
 const copy = require('./lib/copy');
 const css = require('./lib/css');
 const server = require('./lib/server');
-const minify = require('./lib/minify');
+const gzip = require('./lib/gzip');
 const tree = require('nodetree');
 
 const args = process.argv.slice(2);
@@ -34,8 +34,8 @@ if (args[0] === 'build' || args[0] === 'b') {
   const cmd = new build.Build();
 
   switch (args[1]) {
-    case 'main':
-      cmd.buildMain.subscribe(data => {
+    case 'dev':
+      cmd.buildDev.subscribe(data => {
         console.info(data);
       }, err => {
         throw new Error(err);
@@ -43,8 +43,8 @@ if (args[0] === 'build' || args[0] === 'b') {
         console.log('Done.');
       });
       break;
-    case 'vendor':
-      cmd.buildVendor.subscribe(data => {
+    case 'prod':
+      cmd.prodBuilder.subscribe(data => {
         console.info(data);
       }, err => {
         throw new Error(err);
@@ -53,14 +53,6 @@ if (args[0] === 'build' || args[0] === 'b') {
       });
       break;
     default:
-      let start;
-      cmd.buildAll.subscribe(data => {
-        console.info(data);
-      }, err => {
-        throw new Error(err);
-      }, () => {
-        console.log('Done.');
-      });
       break;
   }
 }
@@ -76,52 +68,17 @@ if (args[0] === 'clean') {
 }
 
 if (args[0] === 'generate' || args[0] === 'g') {
-  switch (args[1]) {
-    case 'dev':
-      generateHtml.generateDev().subscribe(data => console.log(data));
-      console.log('Done.');
-      break;
-    case 'prod':
-      generateHtml.generateProd().subscribe(data => console.log(data));
-      console.log('Done.');
-      break;
-    default:
-      generateHtml.generateProd().subscribe(data => console.log(data));
-      console.log('Done.');
-      break;
-  }
+  generateHtml.generate().subscribe(data => console.log(data));
 }
 
-if (args[0] === 'minify' || args[0] === 'uglify') {
-  switch (args[1]) {
-    case 'main':
-      minify.main().subscribe(data => {
-        console.log(data)
-      }, err => {
-        console.log(err);
-      }, () => {
-        console.log('Done.');
-      });
-      break;
-    case 'vendor':
-      minify.vendor().subscribe(data => {
-        console.log(data)
-      }, err => {
-        console.log(err);
-      }, () => {
-        console.log('Done.');
-      });
-      break;
-    default:
-      minify.all().subscribe(data => {
-        console.log(data)
-      }, err => {
-        console.log(err);
-      }, () => {
-        console.log('Done.');
-      });
-      break;
-  }
+if (args[0] === 'gzip') {
+  gzip.app().subscribe(data => {
+    console.log(data)
+  }, err => {
+    console.log(err);
+  }, () => {
+    console.log('Done.');
+  });
 }
 
 if (args[0] === 'serve' || args[0] === 'server' || args[0] === 's') {
@@ -141,15 +98,15 @@ if (args[0] === 'dist') {
   const cssDest = path.resolve(__dirname, '../dist/css/app.css');
   
   let start = new Date();
-  console.log('Prepairing project for production, please wait...');
+  console.log('Preparing project for production, please wait...');
   console.log('-------------------------------------------------------');
 
   clean.clean()
   .concat(copy.copyPublic())
-  .concat(generateHtml.generateProd())
+  .concat(generateHtml.generate())
   .concat(css.compileSass(sassSrc, cssDest))
-  .concat(cmdBuild.buildAll)
-  .concat(minify.all()).subscribe(data => {
+  .concat(cmdBuild.buildProd)
+  .concat(gzip.app()).subscribe(data => {
     console.log(data);
   }, err => {
     throw new Error(err);
@@ -167,4 +124,3 @@ module.exports.clean = clean;
 module.exports.generateHtml = generateHtml;
 module.exports.copy = copy;
 module.exports.css = css;
-module.exports.minify = minify;

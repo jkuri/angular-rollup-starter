@@ -6,10 +6,8 @@
   "scripts": {
     "roll": "node ./scripts/cmd.js dist",
     "clean": "node ./scripts/cmd.js clean",
-    "build": "node ./scripts/cmd.js build",
-    "build:vendor": "node ./scripts/cmd.js build vendor",
-    "build:main": "node ./scripts/cmd.js build main",
-    "minify": "node ./scripts/cmd.js minify",
+    "build": "node ./scripts/cmd.js build dev",
+    "build:prod": "node ./scripts/cmd.js build prod",
     "copy": "node ./scripts/cmd.js copy",
     "test": "karma start config/karma.conf.js",
     "serve": "node ./scripts/cmd.js serve",
@@ -72,14 +70,12 @@
     "nodetree": "0.0.3",
     "reflect-metadata": "^0.1.8",
     "rollup": "^0.35.10",
-    "rollup-plugin-alias": "^1.2.0",
     "rollup-plugin-angular": "^0.2.3",
     "rollup-plugin-buble": "^0.13.0",
     "rollup-plugin-node-resolve": "^2.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "rxjs-es": "^5.0.0-beta.12",
     "tslint": "^3.15.1",
-    "typescript": "^2.0.2",
-    "uglify-js": "^2.7.3"
+    "typescript": "^2.0.2"
   }
 }
