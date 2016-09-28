@@ -18,12 +18,12 @@ function existsSync(file) {
 describe('Acceptance: Build System', function() {
   this.timeout(420000);
 
-  let clean, build, minify, generate;
-  const appFile = path.resolve(dist, 'app.js');
-  const appFileMap = path.resolve(dist, 'app.js.map');
-  const appFileGzip = path.resolve(dist, 'app.js.gz');
-  const index = path.resolve(dist, 'index.html');
-  const favicon = path.resolve(dist, 'favicon.ico');
+  let clean, build, generate;
+  const appFile = path.join(dist, 'app.js');
+  const appFileMap = path.join(dist, 'app.js.map');
+  const appFileGzip = path.join(dist, 'app.js.gz');
+  const index = path.join(dist, 'index.html');
+  const favicon = path.join(dist, 'favicon.ico');
 
   before(() => {
     build = new cmd.build.Build();
@@ -31,20 +31,28 @@ describe('Acceptance: Build System', function() {
   });
 
   beforeEach(function(done) {
-    cmd.clean.clean('dist').subscribe(() => {
+    cmd.clean.clean('dist').subscribe(() => { }, (err) => {
+      throw new Error(err);
+    }, () => {
       done();
     });
   });
 
-  it('build:prod', (done) => {
-    build.buildMain.subscribe(() => { }, err => {
+  after((done) => {
+    cmd.clean.clean('dist').subscribe(() => { }, (err) => {
+      throw new Error(err);
+    }, () => {
+      done();
+    });
+  });
+
+  it('build', (done) => {
+    build.buildProd.subscribe(() => { }, err => {
       return false;
     }, () => {
-      expect(existsSync(dist)).to.be.equal(true);
-      expect(existsSync(appFile)).to.be.equal(true);
-      expect(existsSync(appFileMap)).to.be.equal(true);
-      expect(existsSync(index)).to.be.equal(true);
-      expect(existsSync(favicon)).to.be.equal(true);
+      expect(existsSync(dist)).to.be.true;
+      expect(existsSync(appFile)).to.be.true;
+      expect(existsSync(appFileMap)).to.be.true;
       done();
     });
   });

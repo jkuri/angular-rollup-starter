@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@types/browser-sync": "0.0.32",
+    "@types/chalk": "^0.4.30",
     "@types/fs-extra": "0.0.31",
     "@types/jasmine": "^2.2.33",
     "@types/lodash": "^4.14.34",

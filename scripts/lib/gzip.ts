@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as zlib from 'zlib';
+import * as chalk from 'chalk';
 import { Observable } from 'rxjs';
 
 export function app(): Observable<any> {
@@ -30,10 +31,10 @@ function gzip(srcFile: string, gzipFile: string): Observable<any> {
         'gzip': formatBytes(gzipStats.size, 2)
       };
 
-      let output = '-------------------------------------------------------\n';
-      output += `${srcFile} (${sizes['src']})\n`;
-      output += `${srcFile}.map (${sizes['map']})\n`;
-      output += `${srcFile}.gz (${sizes['gzip']})`;
+      let output = chalk.yellow('-------------------------------------------------------\n');
+      output += chalk.red(`${srcFile} (${sizes['src']})\n`);
+      output += chalk.magenta(`${srcFile}.map (${sizes['map']})\n`);
+      output += chalk.blue(`${srcFile}.gz (${sizes['gzip']})`);
 
       observer.next(output);
       observer.complete();
