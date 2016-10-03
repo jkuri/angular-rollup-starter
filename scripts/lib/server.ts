@@ -69,11 +69,11 @@ export class Server {
                   generateDev().subscribe(data => console.log(data));
                 } else {
                   this.builder.cache = null;
-                  this.builder.buildDev.subscribe(data => { observer.next(data); });
+                  this.builder.buildDevMain.subscribe(data => { observer.next(data); });
                 }
                 break;
               case '.ts':
-                this.builder.buildDev.subscribe(data => { observer.next(data); });
+                this.builder.buildDevMain.subscribe(data => { observer.next(data); });
                 break;
               case '.sass':
                 compileSass(sassSrc, cssDest).subscribe(data => { observer.next(data); });
