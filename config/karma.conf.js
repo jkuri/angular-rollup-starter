@@ -34,11 +34,10 @@ module.exports = (config) => {
           typescript: require('../node_modules/typescript')
         }),
         alias({ 
-          rxjs: path.resolve(__dirname, '../node_modules/rxjs-es'),
-          '@angular/core/testing': path.resolve(__dirname, '../node_modules/@angular/core/testing/index'),
-          '@angular/platform-browser-dynamic/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser-dynamic/testing/index'),
-          '@angular/compiler/testing': path.resolve(__dirname, '../node_modules/@angular/compiler/testing/index'),
-          '@angular/platform-browser/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser/testing/index') 
+          '@angular/core/testing': path.resolve(__dirname, '../node_modules/@angular/core/testing/index.js'),
+          '@angular/platform-browser-dynamic/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser-dynamic/testing/index.js'),
+          '@angular/compiler/testing': path.resolve(__dirname, '../node_modules/@angular/compiler/testing/index.js'),
+          '@angular/platform-browser/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser/testing/index.js') 
         }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
