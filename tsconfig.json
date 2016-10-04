@@ -21,12 +21,5 @@
     "typeRoots": [
       "node_modules/@types"
     ]
-  },
-  "files": [
-    "src/main.ts"
-  ],
-  "angularCompilerOptions": {
-    "genDir": "aot",
-    "skipMetadataEmit": true
   }
 }
