@@ -19,6 +19,7 @@ export class Server {
       port: 4200,
       server: path.resolve(__dirname, '../../dist'),
       files: ['./dist/**/*'],
+      notify: false,
       middleware: [
         fallback({
           index: '/index.html'
