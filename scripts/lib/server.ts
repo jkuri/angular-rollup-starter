@@ -83,11 +83,11 @@ export class Server {
                 break;
             }
           });
-        });
-      });
 
-      publicWatcher.on('change', () => {
-        copyPublic().subscribe(data => { console.log(data); });
+          publicWatcher.on('add', () => copyPublic().subscribe(data => console.log(data)));
+          publicWatcher.on('change', () => copyPublic().subscribe(data => console.log(data)));
+          publicWatcher.on('remove', () => copyPublic().subscribe(data => console.log(data)));
+        });
       });
     });
   }
