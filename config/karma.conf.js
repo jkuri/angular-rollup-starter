@@ -37,7 +37,9 @@ module.exports = (config) => {
           '@angular/core/testing': path.resolve(__dirname, '../node_modules/@angular/core/testing/index.js'),
           '@angular/platform-browser-dynamic/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser-dynamic/testing/index.js'),
           '@angular/compiler/testing': path.resolve(__dirname, '../node_modules/@angular/compiler/testing/index.js'),
-          '@angular/platform-browser/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser/testing/index.js') 
+          '@angular/platform-browser/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser/testing/index.js'),
+          '@angular/router/testing': path.resolve(__dirname, '../node_modules/@angular/router/testing/index.js'),
+          '@angular/common/testing': path.resolve(__dirname, '../node_modules/@angular/common/testing/index.js') 
         }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
