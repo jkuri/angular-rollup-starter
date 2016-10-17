@@ -118,6 +118,11 @@ if (args[0] === 'dist') {
   });
 }
 
+if (args[0] === 'prerender') {
+   const prerender = require('./lib/prerender');
+   prerender.run();
+}
+
 module.exports.build = build;
 module.exports.clean = clean;
 module.exports.generateHtml = generateHtml;

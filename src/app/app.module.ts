@@ -1,8 +1,6 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { UniversalModule } from 'angular2-universal';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
 import { AppComponent } from './app.component';
 
 @NgModule({
@@ -10,10 +8,8 @@ import { AppComponent } from './app.component';
     AppComponent
   ],
   imports: [
-    BrowserModule,
-    CommonModule,
+    UniversalModule,
     FormsModule,
-    HttpModule
   ],
   entryComponents: [AppComponent],
   bootstrap: [AppComponent]
