@@ -34,10 +34,13 @@ export function run(): Observable<any> {
   return new Observable(observer => {
     const options = {
       precompile: true,
-      preboot: true,
       time: false,
       ngModule: AppModule,
-      document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString()
+      originUrl: 'http://localhost:3000',
+      baseUrl: '/',
+      requestUrl: '/',
+      document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString(),
+      preboot: { appRoot: ['app-root'], uglify: true },
     };
 
     const platformRef: any = platformNodeDynamic();
