@@ -40,7 +40,7 @@ export function run(): Observable<any> {
       baseUrl: '/',
       requestUrl: '/',
       document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString(),
-      preboot: { appRoot: ['app-root'], uglify: true },
+      preboot: false
     };
 
     const platformRef: any = platformNodeDynamic();
