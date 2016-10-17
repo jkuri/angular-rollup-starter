@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "roll": "node ./scripts/cmd.js dist",
-    "prerender": "node ./scripts/cmd.js prerender",
+    "roll:prerender": "node ./scripts/cmd.js dist prerender",
     "clean": "node ./scripts/cmd.js clean",
     "build": "node ./scripts/cmd.js build dev",
     "build:prod": "node ./scripts/cmd.js build prod",
@@ -52,6 +52,7 @@
     "@types/browser-sync": "0.0.34",
     "@types/chalk": "^0.4.31",
     "@types/fs-extra": "0.0.33",
+    "@types/glob": "^5.0.30",
     "@types/jasmine": "^2.5.35",
     "@types/lodash": "^4.14.37",
     "@types/node": "^6.0.45",

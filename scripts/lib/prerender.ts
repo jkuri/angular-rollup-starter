@@ -19,29 +19,36 @@ import 'core-js/es7/reflect';
 import 'zone.js/dist/zone-node';
 import 'zone.js/dist/long-stack-trace-zone';
 
+import { enableProdMode } from '@angular/core';
 import { platformNodeDynamic } from 'ng2-platform-node';
 
-import { AppModule } from '../../src/app/app.module';
+import { AppModule } from '../../src/app/app.module.universal';
 import * as path from 'path';
 import * as fs from 'fs';
+import { Observable } from 'rxjs';
+import { generateFromString } from './generate_html';
 
 declare var Zone: any;
 
-export function run(): void {
-  const options = {
-    precompile: true,
-    time: false,
-    ngModule: AppModule,
-    document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString()
-  };
+export function run(): Observable<any> {
+  return new Observable(observer => {
+    const options = {
+      precompile: true,
+      preboot: true,
+      time: false,
+      ngModule: AppModule,
+      document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString()
+    };
 
-  const platformRef: any = platformNodeDynamic();
+    const platformRef: any = platformNodeDynamic();
 
-  const zone = Zone.current.fork({
-    properties: options
+    const zone = Zone.current.fork({
+      properties: options
+    });
+
+    zone.run(() => (platformRef.serializeModule(options.ngModule, options)).then(html => {
+      generateFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'));
+      observer.complete();
+    }));
   });
-
-  zone.run(() => (platformRef.serializeModule(options.ngModule, options)).then(html => {
-    console.log(html);
-  }));
-}
+};

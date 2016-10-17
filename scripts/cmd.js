@@ -27,6 +27,7 @@ const copy = require('./lib/copy');
 const css = require('./lib/css');
 const server = require('./lib/server');
 const gzip = require('./lib/gzip');
+const helpers = require('./lib/helpers');
 const tree = require('nodetree');
 
 const args = process.argv.slice(2);
@@ -89,11 +90,11 @@ if (args[0] === 'serve' || args[0] === 'server' || args[0] === 's') {
   });
 }
 
-if (args[0] === 'dist') {
+if (args[0] === 'dist' && args[1] !== 'prerender') {
   const cmdBuild = new build.Build();
   const sassSrc = path.resolve(__dirname, '../src/styles/app.sass');
   const cssDest = path.resolve(__dirname, '../dist/css/app.css');
-  
+
   let start = new Date();
   console.log(chalk.blue('Preparing project for production, please wait...'));
   console.log(chalk.yellow('-------------------------------------------------------'));
@@ -118,9 +119,43 @@ if (args[0] === 'dist') {
   });
 }
 
-if (args[0] === 'prerender') {
-   const prerender = require('./lib/prerender');
-   prerender.run();
+if (args[0] === 'dist' && args[1] === 'prerender') {
+  const cmdBuild = new build.Build();
+  const sassSrc = path.resolve(__dirname, '../src/styles/app.sass');
+  const cssDest = path.resolve(__dirname, '../dist/css/app.css');
+
+  let start = new Date();
+  console.log(chalk.blue('Preparing project for production, please wait...'));
+  console.log(chalk.yellow('-------------------------------------------------------'));
+
+  clean.clean('dist')
+  .concat(copy.copyPublic())
+  .concat(css.compileSass(sassSrc, cssDest))
+  .concat(cmdBuild.buildProd)
+  .concat(clean.clean('dist/src'))
+  .concat(clean.clean('aot'))
+  .concat(gzip.app()).subscribe(data => {
+    console.log(data);
+  }, err => {
+    throw new Error(err);
+  }, () => {
+    helpers.addModuleIdToComponents().subscribe(() => {}, err => {}, () => {
+      require('./lib/prerender').run()
+      .subscribe(data => {
+        console.log(data);
+      }, err => { throw new Error(err); }, () => {
+        helpers.removeModuleIdFromComponents().subscribe(data => {
+          console.log(data);
+        }, err => { throw new Error(err); }, () => {
+          let time = new Date().getTime() - start.getTime();
+          console.log(chalk.yellow('-------------------------------------------------------'));
+          tree(path.resolve(__dirname, '../dist'));
+          console.log(chalk.yellow('-------------------------------------------------------'));
+          console.log(chalk.green(`Project generated in ${time}ms.`));
+        });
+      });
+    });
+  });
 }
 
 module.exports.build = build;

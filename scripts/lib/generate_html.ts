@@ -22,6 +22,7 @@ export function generateDev(): Observable<any> {
     });
   });
 };
+
 export function generateProd(): Observable<any> {
   return new Observable(observer => {
     const styles = ['css/app.css'];
@@ -36,3 +37,11 @@ export function generateProd(): Observable<any> {
     });
   });
 };
+
+export function generateFromString(html: string): void {
+  const styles = ['css/app.css'];
+  const scripts = ['app.js'];
+  let parsedHtml = _.template(html);
+  fs.outputFileSync(dest, parsedHtml({ styles: styles, scripts: scripts }));
+  console.log(chalk.green(`prerendered index.html generated at ${dest}`));
+}
