@@ -8,6 +8,7 @@
 
 Angular2 starter seed based on Rollup and BrowserSync.
 Production builds including AoT steps. 
+Starter also comes with Universal support built-in. 
 
 ## Start
 
@@ -44,10 +45,7 @@ Production builds automatically includes AoT (Ahead of Time) compilation steps.
 npm run roll
 ```
 
-### 
-
-### SASS Support
-
-This starter comes with integrated SASS support. Just rename `src/styles/app.css` to `src/styles/app.sass` 
-and that file will serves as the entry point. Any other `.sass` files should be imported into main `app.sass`.
-This is hardcoded for now, but can change in the future for more flexible style alignement.
+To use Universal (isomorphic) steps to prerender content in `.html` files
+```sh
+npm run roll:prerender
+```
