@@ -100,6 +100,7 @@ if (args[0] === 'dist' && args[1] !== 'prerender') {
   console.log(chalk.yellow('-------------------------------------------------------'));
 
   clean.clean('dist')
+  .concat(helpers.removeModuleIdFromComponents())
   .concat(copy.copyPublic())
   .concat(generateHtml.generateProd())
   .concat(css.compileSass(sassSrc, cssDest))
@@ -155,6 +156,16 @@ if (args[0] === 'dist' && args[1] === 'prerender') {
         });
       });
     });
+  });
+}
+
+if (args[0] === 'cleanModuleId') {
+  helpers.removeModuleIdFromComponents().subscribe(data => {
+    console.log(data);
+  }, err => {
+    throw new Error(err);
+  }, () => {
+    console.log('Done.');
   });
 }
 

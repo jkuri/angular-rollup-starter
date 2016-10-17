@@ -9,6 +9,7 @@ import { generateDev } from './generate_html';
 import { copyPublic } from './copy';
 import { Build } from './build';
 import { compileSass } from './css';
+import { removeModuleIdFromComponents } from './helpers';
 
 export class Server {
   private options: any;
@@ -51,6 +52,7 @@ export class Server {
         observer.next(`Starting...`);
 
         clean('dist')
+        .concat(removeModuleIdFromComponents())
         .concat(copyPublic())
         .concat(generateDev())
         .concat(compileSass(sassSrc, cssDest))

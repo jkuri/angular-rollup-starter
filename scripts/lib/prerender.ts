@@ -16,17 +16,16 @@ import 'core-js/es6/weak-set';
 import 'core-js/es6/typed';
 import 'core-js/es6/reflect';
 import 'core-js/es7/reflect';
+import 'reflect-metadata';
 import 'zone.js/dist/zone-node';
 import 'zone.js/dist/long-stack-trace-zone';
-
-import { enableProdMode } from '@angular/core';
-import { platformNodeDynamic } from 'ng2-platform-node';
 
 import { AppModule } from '../../src/app/app.module.universal';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Observable } from 'rxjs';
 import { generateFromString } from './generate_html';
+import { platformNodeDynamic } from 'ng2-platform-node';
 
 declare var Zone: any;
 
@@ -40,7 +39,8 @@ export function run(): Observable<any> {
       baseUrl: '/',
       requestUrl: '/',
       document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString(),
-      preboot: false
+      preboot: false,
+      compilerOptions: require('../../tsconfig.json').compilerOptions
     };
 
     const platformRef: any = platformNodeDynamic();
