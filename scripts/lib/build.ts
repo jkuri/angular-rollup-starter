@@ -144,7 +144,7 @@ export class Build {
           moduleName: 'app'
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          observer.next(`Build time: ${time}ms`);
+          observer.next(chalk.yellow(`Build time: ${time}ms`));
           observer.complete();
         });
       }, err => {
@@ -184,12 +184,13 @@ export class Build {
   private ngc(config: string): Observable<any> {
     let start: Date = new Date();
     const cliOptions = new tsc.NgcCliOptions({});
-    return Observable.fromPromise(
+    return new Observable(observer => {
       tsc.main(path.resolve(__dirname, `../../${config}`), cliOptions, this.codegen)
       .then(() => {
         let time: number = new Date().getTime() - start.getTime();
-        return `AoT Build Time: ${time}ms`;
-      })
-    );
+        observer.next(chalk.yellow(`AoT Build Time: ${time}ms`));
+        observer.complete();
+      });
+    });
   }
 }
