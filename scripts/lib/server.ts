@@ -26,7 +26,11 @@ export class Server {
           index: '/index.html'
         })
       ],
-      logLevel: 'info'
+      logLevel: 'info',
+      logPrefix: 'ng2',
+      logConnections: false,
+      logFileChanges: false,
+      logSnippet: false
     };
 
     this.builder = new Build();
