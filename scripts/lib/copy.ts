@@ -12,8 +12,6 @@ export function copyPublic(): Observable<any> {
       if (err) {
         observer.error(err);
       }
-
-      observer.next(chalk.green(`/public dir successfully copied to ${path.basename(destDir)}.`));
       observer.complete();
     });
   });

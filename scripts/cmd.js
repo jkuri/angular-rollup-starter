@@ -28,7 +28,6 @@ const css = require('./lib/css');
 const server = require('./lib/server');
 const gzip = require('./lib/gzip');
 const helpers = require('./lib/helpers');
-const tree = require('nodetree');
 
 const args = process.argv.slice(2);
 
@@ -94,11 +93,9 @@ if (args[0] === 'dist' && args[1] !== 'prerender') {
   const cmdBuild = new build.Build();
   const sassSrc = path.resolve(__dirname, '../src/styles/app.sass');
   const cssDest = path.resolve(__dirname, '../dist/css/app.css');
-
   let start = new Date();
-  console.log(chalk.blue('Preparing project for production, please wait...'));
-  console.log(chalk.yellow('-------------------------------------------------------'));
 
+  console.log(chalk.green('-------------------------------------------------------'));
   clean.clean('dist')
   .concat(helpers.removeModuleIdFromComponents())
   .concat(copy.copyPublic())
@@ -108,14 +105,11 @@ if (args[0] === 'dist' && args[1] !== 'prerender') {
   .concat(clean.clean('dist/src'))
   .concat(clean.clean('aot'))
   .concat(gzip.app()).subscribe(data => {
-    console.log(data);
+    if (data) { console.log(data); }
   }, err => {
     throw new Error(err);
   }, () => {
     let time = new Date().getTime() - start.getTime();
-    console.log(chalk.yellow('-------------------------------------------------------'));
-    tree(path.resolve(__dirname, '../dist'));
-    console.log(chalk.yellow('-------------------------------------------------------'));
     console.log(chalk.green(`Project generated in ${time}ms.`));
   });
 }
@@ -126,9 +120,7 @@ if (args[0] === 'dist' && args[1] === 'prerender') {
   const cssDest = path.resolve(__dirname, '../dist/css/app.css');
 
   let start = new Date();
-  console.log(chalk.blue('Preparing project for production, please wait...'));
-  console.log(chalk.yellow('-------------------------------------------------------'));
-
+  console.log(chalk.green('-------------------------------------------------------'));
   clean.clean('dist')
   .concat(copy.copyPublic())
   .concat(css.compileSass(sassSrc, cssDest))
@@ -136,22 +128,19 @@ if (args[0] === 'dist' && args[1] === 'prerender') {
   .concat(clean.clean('dist/src'))
   .concat(clean.clean('aot'))
   .concat(gzip.app()).subscribe(data => {
-    console.log(data);
+    if (data) { console.log(data); }
   }, err => {
     throw new Error(err);
   }, () => {
     helpers.addModuleIdToComponents().subscribe(() => {}, err => {}, () => {
       require('./lib/prerender').run()
       .subscribe(data => {
-        console.log(data);
+        if (data) { console.log(data); }
       }, err => { throw new Error(err); }, () => {
         helpers.removeModuleIdFromComponents().subscribe(data => {
-          console.log(data);
+          if (data) { console.log(data); }
         }, err => { throw new Error(err); }, () => {
           let time = new Date().getTime() - start.getTime();
-          console.log(chalk.yellow('-------------------------------------------------------'));
-          tree(path.resolve(__dirname, '../dist'));
-          console.log(chalk.yellow('-------------------------------------------------------'));
           console.log(chalk.green(`Project generated in ${time}ms.`));
         });
       });

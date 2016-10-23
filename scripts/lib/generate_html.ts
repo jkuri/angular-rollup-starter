@@ -16,8 +16,6 @@ export function generateDev(): Observable<any> {
       if (err) {
         observer.error(err);
       }
-
-      observer.next(chalk.green(`index.html generated at ${dest}`));
       observer.complete();
     });
   });
@@ -31,8 +29,6 @@ export function generateProd(): Observable<any> {
       if (err) {
         observer.error(err);
       }
-
-      observer.next(chalk.green(`index.html generated at ${dest}`));
       observer.complete();
     });
   });
@@ -43,5 +39,4 @@ export function generateFromString(html: string): void {
   const scripts = ['app.js'];
   let parsedHtml = _.template(html);
   fs.outputFileSync(dest, parsedHtml({ styles: styles, scripts: scripts }));
-  console.log(chalk.green(`prerendered index.html generated at ${dest}`));
 }

@@ -11,9 +11,7 @@ import { AppComponent } from './app.component';
     UniversalModule,
     FormsModule,
   ],
-  entryComponents: [AppComponent],
-  bootstrap: [AppComponent]
+  entryComponents: [ AppComponent ],
+  bootstrap: [ AppComponent ]
 })
-export class AppModule {
-
-}
+export class AppModule { }

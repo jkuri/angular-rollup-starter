@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import * as ts from 'typescript';
 import * as tsc from '@angular/tsc-wrapped';
 import { CodeGenerator } from '@angular/compiler-cli';
+import * as spinner from './spinner';
 
 export class Build {
   public cache: any;
@@ -29,6 +30,7 @@ export class Build {
   get buildDevMain(): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
+      spinner.start('Building...');
       this.devMainBuilder.subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
@@ -46,7 +48,8 @@ export class Build {
           }
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          observer.next(chalk.magenta(`Build time (main): ${time}ms`));
+          spinner.stop();
+          observer.next(chalk.green(`Build time (main): ${time}ms`));
           observer.complete();
         });
       }, err => {
@@ -89,6 +92,7 @@ export class Build {
   get buildDevVendor(): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
+      spinner.start('Building...');
       this.devVendorBuilder.subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
@@ -97,7 +101,8 @@ export class Build {
           dest: path.resolve(__dirname, '../../dist/vendor.js')
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          observer.next(chalk.magenta(`Build time (vendor): ${time}ms`));
+          spinner.stop();
+          observer.next(chalk.green(`Build time (vendor): ${time}ms`));
           observer.complete();
         });
       }, err => {
@@ -110,7 +115,6 @@ export class Build {
   get devVendorBuilder(): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
-      cache: this.cache,
       context: 'this',
       plugins: [
         angular({
@@ -135,6 +139,7 @@ export class Build {
   get runBuildProd(): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
+      spinner.start('Building...');
       this.prodBuilder.subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
@@ -144,7 +149,8 @@ export class Build {
           moduleName: 'app'
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          observer.next(chalk.yellow(`Build time: ${time}ms`));
+          spinner.stop();
+          observer.next(chalk.green(`Build Time: ${time}ms`));
           observer.complete();
         });
       }, err => {
@@ -182,13 +188,14 @@ export class Build {
   }
 
   private ngc(config: string): Observable<any> {
-    let start: Date = new Date();
-    const cliOptions = new tsc.NgcCliOptions({});
-    return new Observable(observer => {
+    return Observable.create(observer => {
+      let start: Date = new Date();
+      const cliOptions = new tsc.NgcCliOptions({});
+      spinner.start('Building...');
       tsc.main(path.resolve(__dirname, `../../${config}`), cliOptions, this.codegen)
       .then(() => {
         let time: number = new Date().getTime() - start.getTime();
-        observer.next(chalk.yellow(`AoT Build Time: ${time}ms`));
+        observer.next(chalk.green(`AoT Build Time: ${time}ms`));
         observer.complete();
       });
     });

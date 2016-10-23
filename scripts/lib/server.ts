@@ -25,7 +25,8 @@ export class Server {
         fallback({
           index: '/index.html'
         })
-      ]
+      ],
+      logLevel: 'info'
     };
 
     this.builder = new Build();
@@ -49,7 +50,7 @@ export class Server {
       });
 
       watcher.on('ready', () => {
-        observer.next(`Starting...`);
+        observer.next(chalk.green('-------------------------------------------------------'));
 
         clean('dist')
         .concat(removeModuleIdFromComponents())

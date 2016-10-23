@@ -31,10 +31,11 @@ function gzip(srcFile: string, gzipFile: string): Observable<any> {
         'gzip': formatBytes(gzipStats.size, 2)
       };
 
-      let output = chalk.yellow('-------------------------------------------------------\n');
+      let output = chalk.green('-------------------------------------------------------\n');
       output += chalk.red(`${srcFile} (${sizes['src']})\n`);
       output += chalk.magenta(`${srcFile}.map (${sizes['map']})\n`);
-      output += chalk.blue(`${srcFile}.gz (${sizes['gzip']})`);
+      output += chalk.green(`${srcFile}.gz (${sizes['gzip']})`);
+      output += chalk.green('\n-------------------------------------------------------');
 
       observer.next(output);
       observer.complete();
