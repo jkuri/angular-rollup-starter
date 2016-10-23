@@ -5,7 +5,7 @@ let spinner;
 
 export function start(msg: string = ''): void {
   if (spinner) { spinner.stop(); }
-  spinner = new Spinner(chalk.yellow(`${msg} %s`));
+  spinner = new Spinner(chalk.yellow(`%s ${msg}`));
   spinner.start();
 }
 

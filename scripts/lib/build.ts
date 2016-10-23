@@ -71,9 +71,7 @@ export class Build {
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
-        commonjs({
-          include: 'node_modules/rxjs/**'
-        }),
+        commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
         buble()
       ],
@@ -123,9 +121,7 @@ export class Build {
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
-        commonjs({
-          include: 'node_modules/rxjs/**'
-        }),
+        commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
         buble()
       ]
@@ -171,13 +167,9 @@ export class Build {
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
-        commonjs({
-          include: 'node_modules/rxjs/**'
-        }),
+        commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble({
-          exclude: '../../node_modules/**'
-        }),
+        buble(),
         uglify()
       ]
     }));
