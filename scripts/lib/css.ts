@@ -27,7 +27,7 @@ export function compileSass(srcPath: string, destPath: string): Observable<any> 
         }
 
         let time: number = new Date().getTime() - start.getTime();
-        observer.next(chalk.green(`SaaS Build Time: ${time}ms`));
+        observer.next(`${chalk.green('✔')} ${chalk.yellow(`SaaS Build Time: ${time}ms`)}`);
         observer.complete();
       });
     });

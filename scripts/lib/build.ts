@@ -49,7 +49,7 @@ export class Build {
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           spinner.stop();
-          observer.next(chalk.green(`Build time (main): ${time}ms`));
+          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (main): ${time}ms`)}`);
           observer.complete();
         });
       }, err => {
@@ -102,7 +102,7 @@ export class Build {
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           spinner.stop();
-          observer.next(chalk.green(`Build time (vendor): ${time}ms`));
+          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (vendor): ${time}ms`)}`);
           observer.complete();
         });
       }, err => {
@@ -150,7 +150,7 @@ export class Build {
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           spinner.stop();
-          observer.next(chalk.green(`Build Time: ${time}ms`));
+          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build time: ${time}ms`)}`);
           observer.complete();
         });
       }, err => {
@@ -195,7 +195,7 @@ export class Build {
       tsc.main(path.resolve(__dirname, `../../${config}`), cliOptions, this.codegen)
       .then(() => {
         let time: number = new Date().getTime() - start.getTime();
-        observer.next(chalk.green(`AoT Build Time: ${time}ms`));
+        observer.next(`${chalk.green('✔')} ${chalk.yellow(`AoT Build Time: ${time}ms`)}`);
         observer.complete();
       });
     });

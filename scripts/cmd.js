@@ -60,21 +60,21 @@ if (args[0] === 'build' || args[0] === 'b') {
 
 if (args[0] === 'clean') {
   clean.clean('dist').subscribe(data => {
-    console.info(data);
+    console.log(data);
   }, err => {
     throw new Error(err);
   }, () => {
-    console.log('Done.');
+    console.log(chalk.green('✔'), chalk.yellow('Done.'));
   });
 }
 
 if (args[0] === 'gzip') {
   gzip.app().subscribe(data => {
-    console.log(data)
+    console.log(data);
   }, err => {
     console.log(err);
   }, () => {
-    console.log('Done.');
+    console.log(chalk.green('✔'), chalk.yellow('Done.'));
   });
 }
 
@@ -85,7 +85,7 @@ if (args[0] === 'serve' || args[0] === 'server' || args[0] === 's') {
   }, err => {
     throw new Error(err);
   }, () => {
-    console.log('Done.');
+    console.log(chalk.green('✔'), chalk.yellow('Done.'));
   });
 }
 
@@ -110,7 +110,8 @@ if (args[0] === 'dist' && args[1] !== 'prerender') {
     throw new Error(err);
   }, () => {
     let time = new Date().getTime() - start.getTime();
-    console.log(chalk.green(`Project generated in ${time}ms.`));
+    console.log(chalk.green('✔'), chalk.yellow(`Project generated in ${time}ms.`));
+    console.log(chalk.green('-------------------------------------------------------'));
   });
 }
 
@@ -141,7 +142,7 @@ if (args[0] === 'dist' && args[1] === 'prerender') {
           if (data) { console.log(data); }
         }, err => { throw new Error(err); }, () => {
           let time = new Date().getTime() - start.getTime();
-          console.log(chalk.green(`Project generated in ${time}ms.`));
+          console.log(chalk.green('✔'), chalk.yellow(`Project generated in ${time}ms.`));
         });
       });
     });
