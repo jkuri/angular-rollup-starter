@@ -9,6 +9,8 @@ import * as angular from 'rollup-plugin-angular';
 import * as tsr from 'rollup-plugin-typescript';
 import * as buble from 'rollup-plugin-buble';
 import * as uglify from 'rollup-plugin-uglify';
+import * as serve from 'rollup-plugin-serve';
+import * as livereload from '../plugins/rollup-plugin-livereload';
 import { Observable } from 'rxjs';
 import * as ts from 'typescript';
 import * as tsc from '@angular/tsc-wrapped';
@@ -123,7 +125,16 @@ export class Build {
         }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble()
+        buble(),
+        serve({
+          contentBase: 'dist/',
+          historyApiFallback: true,
+          port: 4200
+        }),
+        livereload({
+          watch: 'dist/',
+          consoleLogMsg: false
+        })
       ]
     }));
   };

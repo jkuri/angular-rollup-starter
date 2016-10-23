@@ -6,7 +6,7 @@
 
 # Angular2 Rollup Seed
 
-Angular2 starter seed based on Rollup and BrowserSync.
+Angular2 starter seed based on Rollup.
 Production builds including AoT steps. 
 Starter also comes with Universal support built-in. 
 

@@ -1,8 +1,7 @@
 import * as path from 'path';
-import * as browserSync from 'browser-sync';
-import * as fallback from 'connect-history-api-fallback';
 import * as chokidar from 'chokidar';
 import * as chalk from 'chalk';
+import * as open from 'open';
 import { Observable } from 'rxjs';
 import { clean } from './clean';
 import { generateDev } from './generate_html';
@@ -16,28 +15,7 @@ export class Server {
   private builder: Build;
 
   constructor() {
-    this.options = {
-      port: 4200,
-      server: path.resolve(__dirname, '../../dist'),
-      files: ['./dist/**/*'],
-      notify: false,
-      middleware: [
-        fallback({
-          index: '/index.html'
-        })
-      ],
-      logLevel: 'info',
-      logPrefix: 'ng2',
-      logConnections: false,
-      logFileChanges: false,
-      logSnippet: false
-    };
-
     this.builder = new Build();
-  }
-
-  startServer() {
-    browserSync(this.options);
   }
 
   get watch(): Observable<any> {
@@ -64,9 +42,9 @@ export class Server {
         .concat(this.builder.buildDev).subscribe(data => {
           observer.next(data);
         }, err => {
-          console.log(err);
+          console.log(chalk.red(err));
         }, () => {
-          this.startServer();
+          open('http://localhost:4200');
           watcher.on('change', (file, stats) => {
             let ext: string = path.extname(file);
             let basename: string = path.basename(file);
