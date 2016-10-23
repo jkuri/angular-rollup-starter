@@ -55,7 +55,9 @@ export class Build {
           observer.complete();
         });
       }, err => {
-        console.error(`Compile error: ${err}`);
+        this.cache = null;
+        observer.next(chalk.red(`✖ Compile error: ${err}`));
+        spinner.stop();
         observer.complete();
       });
     });
@@ -106,7 +108,8 @@ export class Build {
           observer.complete();
         });
       }, err => {
-        console.error(`Compile error: ${err}`);
+        observer.next(chalk.red(`✖ Compile error: ${err}`));
+        spinner.stop();
         observer.complete();
       });
     });
@@ -148,7 +151,6 @@ export class Build {
       let start: Date = new Date();
       spinner.start('Building...');
       this.prodBuilder.subscribe(bundle => {
-        this.cache = bundle;
         Observable.fromPromise(bundle.write({
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/app.js'),
@@ -161,7 +163,8 @@ export class Build {
           observer.complete();
         });
       }, err => {
-        console.error(`Compile error: ${err}`);
+        observer.next(chalk.red(`✖ Compile error: ${err}`));
+        spinner.stop();
         observer.complete();
       });
     });

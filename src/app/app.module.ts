@@ -18,6 +18,4 @@ import { AppComponent } from './app.component';
   entryComponents: [AppComponent],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-
-}
+export class AppModule { }
