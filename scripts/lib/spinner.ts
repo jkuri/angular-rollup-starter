@@ -1,14 +1,19 @@
-import { Spinner } from 'cli-spinner';
+import * as ora from 'ora';
 import * as chalk from 'chalk';
 
 let spinner;
 
-export function start(msg: string = ''): void {
+export function start(msg = ''): void {
   if (spinner) { spinner.stop(); }
-  spinner = new Spinner(chalk.yellow(`%s ${msg}`));
-  spinner.start();
+  spinner = ora({
+    text: chalk.yellow(msg),
+    color: 'yellow',
+    spinner: 'growVertical',
+    enabled: true,
+    stream: process.stdout
+  }).start();
 }
 
 export function stop(): void {
-  spinner.stop(true);
+  spinner.stop();
 }

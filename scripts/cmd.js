@@ -83,7 +83,7 @@ if (args[0] === 'serve' || args[0] === 'server' || args[0] === 's') {
   cmd.watch.subscribe(data => {
     console.log(data);
   }, err => {
-    throw new Error(err);
+    console.log(chalk.red(`✖ Compile error: ${err}`));
   }, () => {
     console.log(chalk.green('✔'), chalk.yellow('Done.'));
   });
@@ -110,7 +110,7 @@ if (args[0] === 'dist' && args[1] !== 'prerender') {
     throw new Error(err);
   }, () => {
     let time = new Date().getTime() - start.getTime();
-    console.log(chalk.green('✔'), chalk.yellow(`Project generated in ${time}ms.`));
+    console.log(chalk.green('✔'), chalk.yellow(`Project generated in ${helpers.timeHuman(time)}.`));
     console.log(chalk.green('-------------------------------------------------------'));
   });
 }
@@ -142,7 +142,7 @@ if (args[0] === 'dist' && args[1] === 'prerender') {
           if (data) { console.log(data); }
         }, err => { throw new Error(err); }, () => {
           let time = new Date().getTime() - start.getTime();
-          console.log(chalk.green('✔'), chalk.yellow(`Project generated in ${time}ms.`));
+          console.log(chalk.green('✔'), chalk.yellow(`Project generated in ${helpers.timeHuman(time)}.`));
         });
       });
     });

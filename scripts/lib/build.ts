@@ -16,13 +16,16 @@ import * as ts from 'typescript';
 import * as tsc from '@angular/tsc-wrapped';
 import { CodeGenerator } from '@angular/compiler-cli';
 import * as spinner from './spinner';
+import { timeHuman } from './helpers';
 
 export class Build {
   public cache: any;
   public building: boolean;
+  public gdfConfig: any;
 
   constructor() {
     this.building = false;
+    this.gdfConfig = fs.readJsonSync(path.resolve(__dirname, '../../config.json'));
   }
 
   get buildDev(): Observable<any> {
@@ -38,8 +41,8 @@ export class Build {
         Observable.fromPromise(bundle.write({
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/main.js'),
-          sourceMap: true,
-          globals: {
+          sourceMap: false,
+          globals: Object.assign({
             '@angular/core': 'vendor._angular_core',
             '@angular/common': 'vendor._angular_common',
             '@angular/platform-browser': 'vendor._angular_platformBrowser',
@@ -47,11 +50,11 @@ export class Build {
             '@angular/router': 'vendor._angular_router',
             '@angular/http': 'vendor._angular_http',
             '@angular/forms': 'vendor._angular_forms'
-          }
+          }, this.gdfConfig.externalPackages)
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           spinner.stop();
-          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (main): ${time}ms`)}`);
+          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (main): ${timeHuman(time)}`)}`);
           observer.complete();
         });
       }, err => {
@@ -86,8 +89,8 @@ export class Build {
         '@angular/platform-browser',
         '@angular/forms',
         '@angular/http',
-        '@angular/router',
-      ]
+        '@angular/router'
+      ].concat(Object.keys(this.gdfConfig.externalPackages))
     }));
   };
 
@@ -104,7 +107,7 @@ export class Build {
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           spinner.stop();
-          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (vendor): ${time}ms`)}`);
+          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (vendor): ${timeHuman(time)}`)}`);
           observer.complete();
         });
       }, err => {
@@ -159,7 +162,7 @@ export class Build {
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           spinner.stop();
-          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build time: ${time}ms`)}`);
+          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build time: ${timeHuman(time)}`)}`);
           observer.complete();
         });
       }, err => {
@@ -190,7 +193,9 @@ export class Build {
   };
 
   private codegen(ngOptions: tsc.AngularCompilerOptions, cliOptions: tsc.NgcCliOptions, program: ts.Program, host: ts.CompilerHost) {
-    return CodeGenerator.create(ngOptions, cliOptions, program, host).codegen();
+    return CodeGenerator.create(ngOptions, cliOptions, program, host).codegen({
+      transitiveModules: true
+    });
   }
 
   private ngc(config: string): Observable<any> {
@@ -201,7 +206,8 @@ export class Build {
       tsc.main(path.resolve(__dirname, `../../${config}`), cliOptions, this.codegen)
       .then(() => {
         let time: number = new Date().getTime() - start.getTime();
-        observer.next(`${chalk.green('✔')} ${chalk.yellow(`AoT Build Time: ${time}ms`)}`);
+        spinner.stop();
+        observer.next(`${chalk.green('✔')} ${chalk.yellow(`AoT Build Time: ${timeHuman(time)}`)}`);
         observer.complete();
       });
     });
