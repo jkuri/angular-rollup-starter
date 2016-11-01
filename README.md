@@ -41,7 +41,38 @@ Production builds automatically includes AoT (Ahead of Time) compilation steps.
 npm run roll
 ```
 
-To use Universal (isomorphic) steps to prerender content in `.html` files
+### Universal (Isomorphic) Production Build
+
 ```sh
 npm run roll:prerender
 ```
+
+Routes stored in `config.json` as `universalRoutes` will be prerendered into `dist/` directory.
+For example
+```json
+{
+  "externalPackages": { },
+  "styles": ["css/app.css"],
+  "universalRoutes": ["/", "/docs", "/docs/child"]
+}
+```
+
+will generate prerendered content in `dist/index.html` `dist/docs.html` and `dist/docs/child.html`.
+
+To properly serve prerendered content use below `nginx` configuration.
+```nginx
+server {
+  listen 80;
+  server_name subdomain.example.com example.com;
+
+  root /path/to/dist;
+
+  location / {
+    try_files $uri.html $uri $uri/ /index.html;
+  }
+}
+```
+
+### Licence
+
+MIT
