@@ -17,15 +17,16 @@ import * as tsc from '@angular/tsc-wrapped';
 import { CodeGenerator } from '@angular/compiler-cli';
 import * as spinner from './spinner';
 import { timeHuman } from './helpers';
+import { getConfig } from './config';
 
 export class Build {
   public cache: any;
   public building: boolean;
-  public gdfConfig: any;
+  public config: any;
 
   constructor() {
     this.building = false;
-    this.gdfConfig = fs.readJsonSync(path.resolve(__dirname, '../../config.json'));
+    this.config = getConfig();
   }
 
   get buildDev(): Observable<any> {
@@ -50,7 +51,7 @@ export class Build {
             '@angular/router': 'vendor._angular_router',
             '@angular/http': 'vendor._angular_http',
             '@angular/forms': 'vendor._angular_forms'
-          }, this.gdfConfig.externalPackages)
+          }, this.config.externalPackages)
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           spinner.stop();
@@ -90,7 +91,7 @@ export class Build {
         '@angular/forms',
         '@angular/http',
         '@angular/router'
-      ].concat(Object.keys(this.gdfConfig.externalPackages))
+      ].concat(Object.keys(this.config.externalPackages))
     }));
   };
 

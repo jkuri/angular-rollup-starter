@@ -28,6 +28,7 @@ import 'reflect-metadata';
 import 'zone.js/dist/zone-node';
 import 'zone.js/dist/long-stack-trace-zone';
 
+import { getConfig } from './config';
 import { AppModule } from '../../src/app/app.module.universal';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -38,14 +39,20 @@ import { platformNodeDynamic } from 'ng2-platform-node';
 declare var Zone: any;
 
 export function run(): Observable<any> {
+  let config = getConfig();
+  let urls: Observable<any>[] = config.universalRoutes.map(route => prerender(route));
+  return Observable.concat(...urls);
+};
+
+export function prerender(url: string): Observable<any> {
   return new Observable(observer => {
     const options = {
       precompile: true,
       time: false,
       ngModule: AppModule,
-      originUrl: 'http://localhost:3000',
+      originUrl: 'http://localhost:3000/',
       baseUrl: '/',
-      requestUrl: '/',
+      requestUrl: url,
       document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString(),
       preboot: false,
       compilerOptions: require('../../tsconfig.json').compilerOptions
@@ -58,8 +65,8 @@ export function run(): Observable<any> {
     });
 
     zone.run(() => (platformRef.serializeModule(options.ngModule, options)).then(html => {
-      generateFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'));
+      generateFromString(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), url);
       observer.complete();
     }));
   });
-};
+}

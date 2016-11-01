@@ -1,3 +1,5 @@
 {
-  "externalPackages": { }
+  "externalPackages": { },
+  "styles": ["css/app.css"],
+  "universalRoutes": ["/"]
 }
