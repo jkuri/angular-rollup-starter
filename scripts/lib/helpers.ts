@@ -3,11 +3,11 @@ import * as path from 'path';
 import * as glob from 'glob';
 import { Observable } from 'rxjs';
 
-const appDir = path.resolve(__dirname, '../../src/app');
+const appDir = path.resolve(__dirname, '../../');
 
 export function addModuleIdToComponents(): Observable<any> {
   return new Observable(observer => {
-    let srcFiles = glob.sync(`${appDir}/**/*.ts`);
+    let srcFiles = glob.sync(`${appDir}/**/*.component.ts`);
     srcFiles.forEach(srcFile => {
       let contents = fs.readFileSync(srcFile).toString().split('\n');
       let index = contents.findIndex(line => line === '@Component({');
@@ -23,7 +23,7 @@ export function addModuleIdToComponents(): Observable<any> {
 
 export function removeModuleIdFromComponents(): Observable<any> {
   return new Observable(observer => {
-    let srcFiles = glob.sync(`${appDir}/**/*.ts`);
+    let srcFiles = glob.sync(`${appDir}/**/*.component.ts`);
     srcFiles.forEach(srcFile => {
       let contents = fs.readFileSync(srcFile).toString().split('\n');
       let index = contents.findIndex(line => line === '  moduleId: module.id,');

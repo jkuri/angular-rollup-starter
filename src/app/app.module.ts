@@ -15,7 +15,7 @@ import { AppComponent } from './app.component';
     HttpModule,
     FormsModule
   ],
-  entryComponents: [AppComponent],
-  bootstrap: [AppComponent]
+  entryComponents: [ AppComponent ],
+  bootstrap: [ AppComponent ]
 })
 export class AppModule { }
