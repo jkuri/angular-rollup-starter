@@ -2,15 +2,6 @@ import 'reflect-metadata';
 import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as chalk from 'chalk';
-import * as rollup from 'rollup';
-import * as commonjs from 'rollup-plugin-commonjs';
-import * as nodeResolve from 'rollup-plugin-node-resolve';
-import * as angular from 'rollup-plugin-angular';
-import * as tsr from 'rollup-plugin-typescript';
-import * as buble from 'rollup-plugin-buble';
-import * as uglify from 'rollup-plugin-uglify';
-import * as serve from 'rollup-plugin-serve';
-import * as livereload from '../plugins/rollup-plugin-livereload';
 import { Observable } from 'rxjs';
 import * as ts from 'typescript';
 import * as tsc from '@angular/tsc-wrapped';
@@ -18,6 +9,17 @@ import { CodeGenerator } from '@angular/compiler-cli';
 import * as spinner from './spinner';
 import { timeHuman } from './helpers';
 import { getConfig } from './config';
+import * as sass from 'node-sass';
+import * as cleanCss from 'clean-css';
+const rollup = require('rollup');
+const commonjs = require('rollup-plugin-commonjs');
+const nodeResolve = require('rollup-plugin-node-resolve');
+const angular = require('rollup-plugin-angular');
+const tsr = require('rollup-plugin-typescript');
+const buble = require('rollup-plugin-buble');
+const uglify = require('rollup-plugin-uglify');
+const serve = require('rollup-plugin-serve');
+const livereload = require('../plugins/rollup-plugin-livereload');
 
 export class Build {
   public cache: any;
@@ -74,7 +76,11 @@ export class Build {
       context: 'this',
       plugins: [
         angular({
-          exclude: '../../node_modules/**'
+          preprocessors: {
+            style: src => {
+              return sass.renderSync({ data: src, indentedSyntax: true, outputStyle: 'compressed' }).css;
+            }
+          }
         }),
         tsr({
           typescript: require('../../node_modules/typescript')
@@ -125,7 +131,11 @@ export class Build {
       context: 'this',
       plugins: [
         angular({
-          exclude: '../../node_modules/**'
+          preprocessors: {
+            style: src => {
+              return sass.renderSync({ data: src, indentedSyntax: true, outputStyle: 'compressed' }).css;
+            }
+          }
         }),
         tsr({
           typescript: require('../../node_modules/typescript')
@@ -180,7 +190,11 @@ export class Build {
       context: 'this',
       plugins: [
         angular({
-          exclude: '../../node_modules/**'
+          preprocessors: {
+            style: src => {
+              return sass.renderSync({ data: src, indentedSyntax: true, outputStyle: 'compressed' }).css;
+            }
+          }
         }),
         tsr({
           typescript: require('../../node_modules/typescript')

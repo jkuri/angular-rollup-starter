@@ -28,7 +28,11 @@ module.exports = (config) => {
       context: 'this',
       plugins: [
         angular({
-          exclude: 'node_modules/**'
+          preprocessors: {
+            style: src => {
+              return sass.renderSync({ data: src, indentedSyntax: true, outputStyle: 'compressed' }).css;
+            }
+          }
         }),
         ts({
           typescript: require('../node_modules/typescript')

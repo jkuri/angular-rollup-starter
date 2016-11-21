@@ -1,6 +1,6 @@
 {
   "name": "angular2-rollup-starter",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "Angular2 Starter based on Rollup",
   "main": "server.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "roll:prerender": "node ./scripts/cmd.js dist prerender",
     "clean": "node ./scripts/cmd.js clean",
     "test": "karma start config/karma.conf.js",
-    "test:build-system": "node ./tests/run.js"
+    "test:build": "node ./tests/run.js"
   },
   "repository": {
     "type": "git",
