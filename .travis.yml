@@ -4,14 +4,10 @@ language: node_js
 node_js:
   - "5"
   - "6"
+  - "7"
 os:
   - linux
   - osx
-env:
-  global:
-    - DBUS_SESSION_BUS_ADDRESS=/dev/null
-  matrix:
-    - SCRIPT=test:build-system
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
@@ -26,7 +22,11 @@ before_install:
 install:
   - npm install --no-optional
 
+before_script:
+  npm start &
+  sleep 5
+
 script:
-  - npm run-script $SCRIPT
+  - npm run ci
 
-
+sudo: required
