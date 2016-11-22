@@ -11,7 +11,7 @@ Starter also comes with Universal support built-in.
 First, clone this repository.
 
 ```sh
-git clone https://github.com/jkuri/angular2-rollup-starter.git
+git clone https://github.com/jkuri/angular2-rollup-starter.git --depth 1
 ```
 
 Move into cloned directory and run 
@@ -25,7 +25,7 @@ npm install
 ### Serve
 
 ```sh
-npm run serve
+npm start
 ```
 
 ***Note*** Initial load takes some time so vendor files are generated. 
