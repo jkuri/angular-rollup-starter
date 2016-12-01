@@ -123,6 +123,7 @@ if (args[0] === 'dist' && args[1] === 'prerender') {
   let start = new Date();
   console.log(chalk.green('-------------------------------------------------------'));
   clean.clean('dist')
+  .concat(helpers.removeModuleIdFromComponents())
   .concat(copy.copyPublic())
   .concat(css.compileSass(sassSrc, cssDest))
   .concat(cmdBuild.buildProd)
