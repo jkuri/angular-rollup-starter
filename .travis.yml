@@ -2,7 +2,6 @@ dist: trusty
 sudo: required
 language: node_js
 node_js:
-  - "5"
   - "6"
   - "7"
 os:
@@ -20,13 +19,9 @@ before_install:
   - npm config set progress false
 
 install:
-  - npm install --no-optional
-
-before_script:
-  npm start &
-  sleep 5
+  - npm install
 
 script:
+  - npm start &
   - npm run ci
-
-sudo: required
+  - npm run test:build

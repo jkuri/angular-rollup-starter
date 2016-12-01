@@ -99,7 +99,7 @@
     "rollup-plugin-uglify": "^1.0.1",
     "rxjs-es": "^5.0.0-beta.12",
     "ts-node": "^1.7.0",
-    "tslint": "^4.0.2",
+    "tslint": "^3.9.0",
     "typescript": "^2.0.10"
   }
 }
