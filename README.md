@@ -1,6 +1,7 @@
 # Angular2 Rollup Seed
 
 [![Build Status](https://travis-ci.org/jkuri/angular2-rollup-starter.svg?branch=master)](https://travis-ci.org/jkuri/angular2-rollup-starter)
+[![Build status](https://ci.appveyor.com/api/projects/status/u6b3i8c8fnrh4dmb?svg=true)](https://ci.appveyor.com/project/jkuri/angular2-rollup-starter)
 
 Angular2 starter seed based on Rollup.
 Production builds including AoT steps. 
