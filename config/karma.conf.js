@@ -54,8 +54,14 @@ module.exports = (config) => {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
-    singleRun: true
+    browsers: ['ChromeLauncher'],
+    singleRun: true,
+    customLaunchers: {
+      ChromeLauncher: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    }
   };
 
   config.set(configuration);

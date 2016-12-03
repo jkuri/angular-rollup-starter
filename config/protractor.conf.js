@@ -20,7 +20,7 @@ exports.config = {
   capabilities: {
     browserName: 'chrome',
     chromeOptions: {
-      args: ['show-fps-counter=true']
+      args: ['show-fps-counter=true', 'no-sandbox']
     }
   },
   useAllAngular2AppRoots: true,
