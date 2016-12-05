@@ -1,5 +1,5 @@
-import * as clispinner from 'cli-progress-spinner';
 import * as chalk from 'chalk';
+const clispinner = require('cli-progress-spinner');
 
 let spinner;
 
@@ -16,4 +16,8 @@ export function start(msg = ''): void {
 
 export function stop(): void {
   spinner.stop();
+}
+
+export function clear(): void {
+  spinner.clear();
 }

@@ -1,6 +1,6 @@
 {
   "name": "angular2-rollup-starter",
-  "version": "0.0.53",
+  "version": "0.0.54",
   "description": "Angular2 Starter based on Rollup",
   "scripts": {
     "serve": "node ./scripts/cmd.js serve",

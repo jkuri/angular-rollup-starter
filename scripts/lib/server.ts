@@ -1,17 +1,16 @@
 import * as path from 'path';
 import * as chokidar from 'chokidar';
 import * as chalk from 'chalk';
-import * as open from 'open';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { clean } from './clean';
 import { generateDev } from './generate_html';
 import { copyPublic } from './copy';
 import { Build } from './build';
 import { compileSass } from './css';
 import { removeModuleIdFromComponents } from './helpers';
+const open = require('open');
 
 export class Server {
-  private options: any;
   private builder: Build;
 
   constructor() {
@@ -22,6 +21,7 @@ export class Server {
     return new Observable(observer => {
       const sassSrc = path.resolve(__dirname, '../../src/styles/app.sass');
       const cssDest = path.resolve(__dirname, '../../dist/css/app.css');
+      let building: Subscription = null;
 
       const watcher = chokidar.watch(path.resolve(__dirname, '../../src'), {
         persistent: true
@@ -52,14 +52,24 @@ export class Server {
             switch (ext) {
               case '.html':
                 if (basename === 'index.html') {
-                  generateDev().subscribe(data => console.log(data));
+                  generateDev().subscribe(data => observer.next(data));
                 } else {
                   this.builder.cache = null;
-                  this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                  if (this.builder.building) {
+                    building.unsubscribe();
+                    building = this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                  } else {
+                    building = this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                  }
                 }
                 break;
               case '.ts':
-                this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                if (this.builder.building) {
+                  building.unsubscribe();
+                  building = this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                } else {
+                  building = this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                }
                 break;
               case '.sass':
                 compileSass(sassSrc, cssDest).subscribe(data => { observer.next(data); });

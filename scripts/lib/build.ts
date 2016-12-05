@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import * as chalk from 'chalk';
 import { Observable } from 'rxjs';
 import * as ts from 'typescript';
@@ -33,6 +34,7 @@ export class Build {
   }
 
   get buildDevMain(): Observable<any> {
+    this.building = true;
     return Observable.create(observer => {
       let start: Date = new Date();
       spinner.start('Building...');
@@ -41,7 +43,7 @@ export class Build {
         Observable.fromPromise(bundle.write({
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/main.js'),
-          sourceMap: true,
+          sourceMap: false,
           globals: Object.assign({
             '@angular/core': 'vendor._angular_core',
             '@angular/common': 'vendor._angular_common',
@@ -55,11 +57,13 @@ export class Build {
           let time: number = new Date().getTime() - start.getTime();
           spinner.stop();
           observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (main): ${timeHuman(time)}`)}`);
+          this.building = false;
           observer.complete();
         });
       }, err => {
         this.cache = null;
         observer.next(chalk.red(`✖ Compile error: ${err}`));
+        this.building = false;
         spinner.stop();
         observer.complete();
       });
@@ -72,7 +76,9 @@ export class Build {
       cache: this.cache,
       context: 'this',
       plugins: [
-        angular(),
+        angular({
+          exclude: '../../node_modules/**'
+        }),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -121,7 +127,9 @@ export class Build {
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
       context: 'this',
       plugins: [
-        angular(),
+        angular({
+          exclude: '../../node_modules/**'
+        }),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -153,7 +161,7 @@ export class Build {
         Observable.fromPromise(bundle.write({
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/app.js'),
-          sourceMap: false,
+          sourceMap: true,
           moduleName: 'app'
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
@@ -174,7 +182,9 @@ export class Build {
       entry: path.resolve(__dirname, '../../src/main.aot.ts'),
       context: 'this',
       plugins: [
-        angular(),
+        angular({
+          exclude: '../../node_modules/**'
+        }),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
