@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import * as path from 'path';
-import * as fs from 'fs-extra';
 import * as chalk from 'chalk';
 import { Observable } from 'rxjs';
 import * as ts from 'typescript';
@@ -9,8 +8,6 @@ import { CodeGenerator } from '@angular/compiler-cli';
 import * as spinner from './spinner';
 import { timeHuman } from './helpers';
 import { getConfig } from './config';
-import * as sass from 'node-sass';
-import * as cleanCss from 'clean-css';
 const rollup = require('rollup');
 const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
@@ -44,7 +41,7 @@ export class Build {
         Observable.fromPromise(bundle.write({
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/main.js'),
-          sourceMap: false,
+          sourceMap: true,
           globals: Object.assign({
             '@angular/core': 'vendor._angular_core',
             '@angular/common': 'vendor._angular_common',
@@ -75,13 +72,7 @@ export class Build {
       cache: this.cache,
       context: 'this',
       plugins: [
-        angular({
-          preprocessors: {
-            style: src => {
-              return sass.renderSync({ data: src, indentedSyntax: true, outputStyle: 'compressed' }).css;
-            }
-          }
-        }),
+        angular(),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -130,13 +121,7 @@ export class Build {
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
       context: 'this',
       plugins: [
-        angular({
-          preprocessors: {
-            style: src => {
-              return sass.renderSync({ data: src, indentedSyntax: true, outputStyle: 'compressed' }).css;
-            }
-          }
-        }),
+        angular(),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -168,7 +153,7 @@ export class Build {
         Observable.fromPromise(bundle.write({
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/app.js'),
-          sourceMap: true,
+          sourceMap: false,
           moduleName: 'app'
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
@@ -189,13 +174,7 @@ export class Build {
       entry: path.resolve(__dirname, '../../src/main.aot.ts'),
       context: 'this',
       plugins: [
-        angular({
-          preprocessors: {
-            style: src => {
-              return sass.renderSync({ data: src, indentedSyntax: true, outputStyle: 'compressed' }).css;
-            }
-          }
-        }),
+        angular(),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),

@@ -62,12 +62,7 @@ export class Server {
                 this.builder.buildDevMain.subscribe(data => { observer.next(data); });
                 break;
               case '.sass':
-                if (sassSrc === path.resolve(file)) {
-                  compileSass(sassSrc, cssDest).subscribe(data => { observer.next(data); });
-                } else {
-                  this.builder.cache = null;
-                  this.builder.buildDevMain.subscribe(data => { observer.next(data); });
-                }
+                compileSass(sassSrc, cssDest).subscribe(data => { observer.next(data); });
                 break;
               default:
                 break;
