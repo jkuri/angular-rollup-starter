@@ -1,8 +1,7 @@
 {
   "name": "angular2-rollup-starter",
-  "version": "0.0.52",
+  "version": "0.0.53",
   "description": "Angular2 Starter based on Rollup",
-  "main": "server.js",
   "scripts": {
     "serve": "node ./scripts/cmd.js serve",
     "start": "npm run serve",
@@ -81,6 +80,7 @@
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.0.2",
     "karma-rollup-plugin": "0.2.4",
+    "karma-spec-reporter": "0.0.26",
     "livereload": "^0.6.0",
     "lodash": "^4.17.2",
     "mocha": "^3.1.2",
