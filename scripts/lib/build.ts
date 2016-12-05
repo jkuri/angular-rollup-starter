@@ -38,7 +38,6 @@ export class Build {
     this.building = true;
     return Observable.create(observer => {
       let start: Date = new Date();
-      // spinner.start('Building...');
       this.devMainBuilder.subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
@@ -56,7 +55,6 @@ export class Build {
           }, this.config.externalPackages)
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          // spinner.stop();
           observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (main): ${timeHuman(time)}`)}`);
           this.building = false;
           observer.complete();
@@ -65,7 +63,6 @@ export class Build {
         this.cache = null;
         observer.next(chalk.red(`✖ Compile error: ${err}`));
         this.building = false;
-        // spinner.stop();
         observer.complete();
       });
     });
@@ -103,7 +100,6 @@ export class Build {
   get buildDevVendor(): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
-      // spinner.start('Building...');
       this.devVendorBuilder.subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
@@ -112,13 +108,11 @@ export class Build {
           dest: path.resolve(__dirname, '../../dist/vendor.js')
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          // spinner.stop();
           observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (vendor): ${timeHuman(time)}`)}`);
           observer.complete();
         });
       }, err => {
         observer.next(chalk.red(`✖ Compile error: ${err}`));
-        // spinner.stop();
         observer.complete();
       });
     });
@@ -159,7 +153,6 @@ export class Build {
   get runBuildProd(): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
-      // spinner.start('Building...');
       this.prodBuilder.subscribe(bundle => {
         Observable.fromPromise(bundle.write({
           format: 'iife',
@@ -168,13 +161,11 @@ export class Build {
           moduleName: 'app'
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          // spinner.stop();
           observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build time: ${timeHuman(time)}`)}`);
           observer.complete();
         });
       }, err => {
         observer.next(chalk.red(`✖ Compile error: ${err}`));
-        // spinner.stop();
         observer.complete();
       });
     });
