@@ -1,6 +1,6 @@
 {
   "name": "angular2-rollup-starter",
-  "version": "0.0.55",
+  "version": "0.0.56",
   "description": "Angular2 Starter based on Rollup",
   "scripts": {
     "serve": "node ./scripts/cmd.js serve",
@@ -94,7 +94,7 @@
     "rollup-plugin-buble": "^0.14.0",
     "rollup-plugin-commonjs": "^5.0.5",
     "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-plugin-progress": "0.0.2",
+    "rollup-plugin-progress": "0.0.5",
     "rollup-plugin-serve": "^0.1.0",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify": "^1.0.1",
