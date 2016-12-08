@@ -43,7 +43,7 @@ export class Build {
         Observable.fromPromise(bundle.write({
           format: 'iife',
           dest: path.resolve(__dirname, '../../dist/main.js'),
-          sourceMap: false,
+          sourceMap: true,
           globals: Object.assign({
             '@angular/core': 'vendor._angular_core',
             '@angular/common': 'vendor._angular_common',
@@ -105,6 +105,7 @@ export class Build {
         Observable.fromPromise(bundle.write({
           format: 'iife',
           moduleName: 'vendor',
+          sourceMap: true,
           dest: path.resolve(__dirname, '../../dist/vendor.js')
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();

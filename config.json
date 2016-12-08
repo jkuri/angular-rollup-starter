@@ -1,5 +1,7 @@
 {
-  "externalPackages": { },
+  "externalPackages": { 
+    "rxjs": "vendor.rxjs"
+  },
   "styles": ["css/app.css"],
   "universalRoutes": ["/"]
 }
