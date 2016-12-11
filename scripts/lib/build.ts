@@ -74,9 +74,7 @@ export class Build {
       cache: this.cache,
       context: 'this',
       plugins: [
-        angular({
-          exclude: '../../node_modules/**'
-        }),
+        angular(),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -124,9 +122,7 @@ export class Build {
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
       context: 'this',
       plugins: [
-        angular({
-          exclude: '../../node_modules/**'
-        }),
+        angular(),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -177,9 +173,7 @@ export class Build {
       entry: path.resolve(__dirname, '../../src/main.aot.ts'),
       context: 'this',
       plugins: [
-        angular({
-          exclude: '../../node_modules/**'
-        }),
+        angular(),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -193,9 +187,7 @@ export class Build {
   };
 
   private codegen(ngOptions: tsc.AngularCompilerOptions, cliOptions: tsc.NgcCliOptions, program: ts.Program, host: ts.CompilerHost) {
-    return CodeGenerator.create(ngOptions, cliOptions, program, host).codegen({
-      transitiveModules: true
-    });
+    return CodeGenerator.create(ngOptions, cliOptions, program, host).codegen();
   }
 
   private ngc(config: string): Observable<any> {
