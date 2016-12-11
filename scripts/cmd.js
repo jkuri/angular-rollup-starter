@@ -28,6 +28,7 @@ const css = require('./lib/css');
 const server = require('./lib/server');
 const gzip = require('./lib/gzip');
 const helpers = require('./lib/helpers');
+const temp = require('./lib/temp');
 
 const args = process.argv.slice(2);
 
@@ -80,12 +81,14 @@ if (args[0] === 'gzip') {
 
 if (args[0] === 'serve' || args[0] === 'server' || args[0] === 's') {
   const cmd = new server.Server();
-  cmd.watch.subscribe(data => {
-    console.log(data);
-  }, err => {
-    console.log(chalk.red(`✖ Compile error: ${err}`));
-  }, () => {
-    console.log(chalk.green('✔'), chalk.yellow('Done.'));
+  temp.setupTempDir().then(tempDir => {
+    cmd.watch(tempDir).subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(chalk.red(`✖ Compile error: ${err}`));
+    }, () => {
+      console.log(chalk.green('✔'), chalk.yellow('Done.'));
+    });
   });
 }
 
@@ -98,8 +101,8 @@ if (args[0] === 'dist' && args[1] !== 'prerender') {
   console.log(chalk.green('-------------------------------------------------------'));
   clean.clean('dist')
   .concat(helpers.removeModuleIdFromComponents())
-  .concat(copy.copyPublic())
-  .concat(generateHtml.generateProd())
+  .concat(copy.copyPublic('dist'))
+  .concat(generateHtml.generateProd('dist'))
   .concat(css.compileSass(sassSrc, cssDest))
   .concat(cmdBuild.buildProd)
   .concat(clean.clean('dist/src'))
@@ -124,7 +127,7 @@ if (args[0] === 'dist' && args[1] === 'prerender') {
   console.log(chalk.green('-------------------------------------------------------'));
   clean.clean('dist')
   .concat(helpers.removeModuleIdFromComponents())
-  .concat(copy.copyPublic())
+  .concat(copy.copyPublic('dist'))
   .concat(css.compileSass(sassSrc, cssDest))
   .concat(cmdBuild.buildProd)
   .concat(clean.clean('dist/src'))

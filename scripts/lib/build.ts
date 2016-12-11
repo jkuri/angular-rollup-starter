@@ -30,19 +30,19 @@ export class Build {
     this.config = getConfig();
   }
 
-  get buildDev(): Observable<any> {
-    return this.buildDevMain.concat(this.buildDevVendor);
+  buildDev(tempDir: string): Observable<any> {
+    return this.buildDevMain(tempDir).concat(this.buildDevVendor(tempDir));
   }
 
-  get buildDevMain(): Observable<any> {
+  buildDevMain(tempDir: string): Observable<any> {
     this.building = true;
     return Observable.create(observer => {
       let start: Date = new Date();
-      this.devMainBuilder.subscribe(bundle => {
+      this.devMainBuilder(tempDir).subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
           format: 'iife',
-          dest: path.resolve(__dirname, '../../dist/main.js'),
+          dest: path.resolve(tempDir, 'main.js'),
           sourceMap: true,
           globals: Object.assign({
             '@angular/core': 'vendor._angular_core',
@@ -68,7 +68,7 @@ export class Build {
     });
   }
 
-  get devMainBuilder(): Observable<any> {
+  devMainBuilder(tempDir: string): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
       entry: path.resolve(__dirname, '../../src/main.ts'),
       cache: this.cache,
@@ -95,16 +95,16 @@ export class Build {
     }));
   };
 
-  get buildDevVendor(): Observable<any> {
+  buildDevVendor(tempDir: string): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
-      this.devVendorBuilder.subscribe(bundle => {
+      this.devVendorBuilder(tempDir).subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
           format: 'iife',
           moduleName: 'vendor',
           sourceMap: true,
-          dest: path.resolve(__dirname, '../../dist/vendor.js')
+          dest: path.resolve(tempDir, 'vendor.js')
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (vendor): ${timeHuman(time)}`)}`);
@@ -117,7 +117,7 @@ export class Build {
     });
   }
 
-  get devVendorBuilder(): Observable<any> {
+  devVendorBuilder(tempDir: string): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
       context: 'this',
@@ -131,12 +131,12 @@ export class Build {
         buble(),
         progress(),
         serve({
-          contentBase: 'dist/',
+          contentBase: path.resolve(tempDir),
           historyApiFallback: true,
           port: 4200
         }),
         livereload({
-          watch: 'dist/',
+          watch: path.resolve(tempDir),
           consoleLogMsg: false
         })
       ]

@@ -1,6 +1,6 @@
 {
   "name": "angular2-rollup-starter",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "description": "Angular2 Starter based on Rollup",
   "scripts": {
     "serve": "node ./scripts/cmd.js serve",
@@ -66,6 +66,7 @@
     "@types/node": "^6.0.48",
     "@types/node-sass": "3.10.32",
     "@types/selenium-webdriver": "^2.53.35",
+    "@types/temp": "^0.8.29",
     "chai": "^3.5.0",
     "chalk": "^1.1.3",
     "chokidar": "^1.6.1",

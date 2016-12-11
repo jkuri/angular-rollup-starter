@@ -17,10 +17,10 @@ export class Server {
     this.builder = new Build();
   }
 
-  get watch(): Observable<any> {
+  watch(tempDir: string): Observable<any> {
     return new Observable(observer => {
       const sassSrc = path.resolve(__dirname, '../../src/styles/app.sass');
-      const cssDest = path.resolve(__dirname, '../../dist/css/app.css');
+      const cssDest = path.resolve(tempDir, 'css/app.css');
       let building: Subscription = null;
 
       const watcher = chokidar.watch(path.resolve(__dirname, '../../src'), {
@@ -34,12 +34,11 @@ export class Server {
       watcher.on('ready', () => {
         observer.next(chalk.green('-------------------------------------------------------'));
 
-        clean('dist')
-        .concat(removeModuleIdFromComponents())
-        .concat(copyPublic())
-        .concat(generateDev())
+        removeModuleIdFromComponents()
+        .concat(copyPublic(tempDir))
+        .concat(generateDev(tempDir))
         .concat(compileSass(sassSrc, cssDest))
-        .concat(this.builder.buildDev).subscribe(data => {
+        .concat(this.builder.buildDev(tempDir)).subscribe(data => {
           observer.next(data);
         }, err => {
           console.log(chalk.red(err));
@@ -52,23 +51,23 @@ export class Server {
             switch (ext) {
               case '.html':
                 if (basename === 'index.html') {
-                  generateDev().subscribe(data => observer.next(data));
+                  generateDev(tempDir).subscribe(data => observer.next(data));
                 } else {
                   this.builder.cache = null;
                   if (this.builder.building) {
                     building.unsubscribe();
-                    building = this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                    building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
                   } else {
-                    building = this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                    building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
                   }
                 }
                 break;
               case '.ts':
                 if (this.builder.building) {
                   building.unsubscribe();
-                  building = this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                  building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
                 } else {
-                  building = this.builder.buildDevMain.subscribe(data => { observer.next(data); });
+                  building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
                 }
                 break;
               case '.sass':
@@ -79,9 +78,9 @@ export class Server {
             }
           });
 
-          publicWatcher.on('add', () => copyPublic().subscribe(data => console.log(data)));
-          publicWatcher.on('change', () => copyPublic().subscribe(data => console.log(data)));
-          publicWatcher.on('remove', () => copyPublic().subscribe(data => console.log(data)));
+          publicWatcher.on('add', () => copyPublic(tempDir).subscribe(data => console.log(data)));
+          publicWatcher.on('change', () => copyPublic(tempDir).subscribe(data => console.log(data)));
+          publicWatcher.on('remove', () => copyPublic(tempDir).subscribe(data => console.log(data)));
         });
       });
     });

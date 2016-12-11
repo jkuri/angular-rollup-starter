@@ -7,10 +7,10 @@ import { getConfig } from './config';
 
 const config = getConfig();
 const index = path.resolve(__dirname, '../../src/index.html');
-const dest = path.resolve(__dirname, '../../dist/index.html');
 const content = _.template(fs.readFileSync(index).toString());
 
-export function generateDev(): Observable<any> {
+export function generateDev(dir: string): Observable<any> {
+  const dest = path.resolve(dir, 'index.html');
   return new Observable(observer => {
     const styles = config.styles;
     const scripts = ['vendor.js', 'main.js'];
@@ -23,7 +23,8 @@ export function generateDev(): Observable<any> {
   });
 };
 
-export function generateProd(): Observable<any> {
+export function generateProd(dir: string): Observable<any> {
+  const dest = path.resolve(dir, 'index.html');
   return new Observable(observer => {
     const styles = config.styles;
     const scripts = ['app.js'];
