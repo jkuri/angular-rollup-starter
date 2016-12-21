@@ -16,14 +16,15 @@
     "noImplicitReturns": true,
     "noImplicitUseStrict": false,
     "noFallthroughCasesInSwitch": true,
-    "outDir": "./dist",
+    "outDir": "./aot",
     "rootDir": ".",
     "typeRoots": [
       "node_modules/@types"
     ]
   },
   "files": [
-    "src/main.ts"
+    "src/app/app.module.ts",
+    "src/main.aot.ts"
   ],
   "angularCompilerOptions": {
     "genDir": "aot",

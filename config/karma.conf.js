@@ -70,7 +70,10 @@ module.exports = (config) => {
     browsers: ['Chrome'],
     singleRun: true,
     concurrency: 1,
-    browserNoActivityTimeout: 10000
+    browserNoActivityTimeout: 10000,
+    mime: {
+      'text/x-typescript': ['ts', 'tsx']
+    }
   };
 
   config.set(configuration);
