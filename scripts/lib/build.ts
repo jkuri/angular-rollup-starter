@@ -44,15 +44,7 @@ export class Build {
           format: 'iife',
           dest: path.resolve(tempDir, 'main.js'),
           sourceMap: true,
-          globals: Object.assign({
-            '@angular/core': 'vendor._angular_core',
-            '@angular/common': 'vendor._angular_common',
-            '@angular/platform-browser': 'vendor._angular_platformBrowser',
-            '@angular/platform-browser-dynamic': 'vendor._angular_platformBrowserDynamic',
-            '@angular/router': 'vendor._angular_router',
-            '@angular/http': 'vendor._angular_http',
-            '@angular/forms': 'vendor._angular_forms'
-          }, this.config.externalPackages)
+          globals: this.config.externalPackages
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
           observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (main): ${timeHuman(time)}`)}`);
@@ -83,15 +75,7 @@ export class Build {
         buble(),
         progress()
       ],
-      external: [
-        '@angular/core',
-        '@angular/common',
-        '@angular/platform-browser-dynamic',
-        '@angular/platform-browser',
-        '@angular/forms',
-        '@angular/http',
-        '@angular/router'
-      ].concat(Object.keys(this.config.externalPackages))
+      external: Object.keys(this.config.externalPackages)
     }));
   };
 
@@ -198,6 +182,9 @@ export class Build {
         spinner.stop();
         observer.next(`${chalk.green('✔')} ${chalk.yellow(`AoT Build Time: ${timeHuman(time)}`)}`);
         observer.complete();
+      }).catch(err => {
+        observer.next(chalk.red(`✖ Compile error: ${err}`));
+        observer.error();
       });
     });
   }
