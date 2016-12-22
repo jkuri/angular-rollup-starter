@@ -153,6 +153,23 @@ if (args[0] === 'dist' && args[1] === 'prerender') {
   });
 }
 
+if (args[0] === 'prerender') {
+  let start = new Date();
+  helpers.addModuleIdToComponents().subscribe(() => {}, err => {}, () => {
+    require('./lib/prerender').run()
+    .subscribe(data => {
+      if (data) { console.log(data); }
+    }, err => { throw new Error(err); }, () => {
+      helpers.removeModuleIdFromComponents().subscribe(data => {
+        if (data) { console.log(data); }
+      }, err => { throw new Error(err); }, () => {
+        let time = new Date().getTime() - start.getTime();
+        console.log(chalk.green('✔'), chalk.yellow(`Prerender done in ${helpers.timeHuman(time)}.`));
+      });
+    });
+  });
+}
+
 if (args[0] === 'cleanModuleId') {
   helpers.removeModuleIdFromComponents().subscribe(data => {
     console.log(data);

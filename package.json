@@ -8,6 +8,7 @@
     "roll": "node ./scripts/cmd.js dist",
     "build": "npm run roll",
     "roll:prerender": "node ./scripts/cmd.js dist prerender",
+    "prerender": "node ./scripts/cmd.js prerender",
     "clean": "node ./scripts/cmd.js clean",
     "test": "karma start config/karma.conf.js",
     "test:build": "node ./tests/run.js",
