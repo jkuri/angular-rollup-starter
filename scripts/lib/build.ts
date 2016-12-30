@@ -8,7 +8,7 @@ import * as tsc from '@angular/tsc-wrapped';
 import { CodeGenerator } from '@angular/compiler-cli';
 import * as spinner from './spinner';
 import { timeHuman } from './helpers';
-import { getConfig } from './config';
+import { getConfig } from './utils';
 const rollup = require('rollup');
 const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
@@ -30,8 +30,8 @@ export class Build {
     this.config = getConfig();
   }
 
-  buildDev(tempDir: string): Observable<any> {
-    return this.buildDevMain(tempDir).concat(this.buildDevVendor(tempDir));
+  buildDev(tempDir: string, port: number): Observable<any> {
+    return this.buildDevMain(tempDir).concat(this.buildDevVendor(tempDir, port));
   }
 
   buildDevMain(tempDir: string): Observable<any> {
@@ -47,7 +47,7 @@ export class Build {
           globals: this.config.externalPackages
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (main): ${timeHuman(time)}`)}`);
+          observer.next(`${chalk.green('✔')} Build Time (main): ${timeHuman(time)}`);
           this.building = false;
           observer.complete();
         });
@@ -79,10 +79,10 @@ export class Build {
     }));
   };
 
-  buildDevVendor(tempDir: string): Observable<any> {
+  buildDevVendor(tempDir: string, port: number): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
-      this.devVendorBuilder(tempDir).subscribe(bundle => {
+      this.devVendorBuilder(tempDir, port).subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
           format: 'iife',
@@ -91,7 +91,7 @@ export class Build {
           dest: path.resolve(tempDir, 'vendor.js')
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build Time (vendor): ${timeHuman(time)}`)}`);
+          observer.next(`${chalk.green('✔')} Build Time (vendor): ${timeHuman(time)}`);
           observer.complete();
         });
       }, err => {
@@ -101,7 +101,7 @@ export class Build {
     });
   }
 
-  devVendorBuilder(tempDir: string): Observable<any> {
+  devVendorBuilder(tempDir: string, port: number): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
       context: 'this',
@@ -117,7 +117,7 @@ export class Build {
         serve({
           contentBase: path.resolve(tempDir),
           historyApiFallback: true,
-          port: 4200
+          port: port
         }),
         livereload({
           watch: path.resolve(tempDir),
@@ -142,7 +142,7 @@ export class Build {
           moduleName: 'app'
         })).subscribe(resp => {
           let time: number = new Date().getTime() - start.getTime();
-          observer.next(`${chalk.green('✔')} ${chalk.yellow(`Build time: ${timeHuman(time)}`)}`);
+          observer.next(`${chalk.green('✔')} Build time: ${timeHuman(time)}`);
           observer.complete();
         });
       }, err => {
@@ -154,10 +154,13 @@ export class Build {
 
   get prodBuilder(): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
-      entry: path.resolve(__dirname, '../../aot/src/main.aot.js'),
+      entry: path.resolve(__dirname, '../../src/main.aot.ts'),
       context: 'this',
       plugins: [
         angular(),
+        tsr({
+          typescript: require('../../node_modules/typescript')
+        }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
         buble(),
@@ -180,9 +183,10 @@ export class Build {
       .then(() => {
         let time: number = new Date().getTime() - start.getTime();
         spinner.stop();
-        observer.next(`${chalk.green('✔')} ${chalk.yellow(`AoT Build Time: ${timeHuman(time)}`)}`);
+        observer.next(`${chalk.green('✔')} AoT Build Time: ${timeHuman(time)}`);
         observer.complete();
-      }).catch(err => {
+      })
+      .catch(err => {
         observer.next(chalk.red(`✖ Compile error: ${err}`));
         observer.error();
       });

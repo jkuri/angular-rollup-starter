@@ -1,12 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as glob from 'glob';
-import { Observable } from 'rxjs';
 
 const appDir = path.resolve(__dirname, '../../');
 
-export function addModuleIdToComponents(): Observable<any> {
-  return new Observable(observer => {
+export function addModuleIdToComponents(): Promise<null> {
+  return new Promise(resolve => {
     let srcFiles = glob.sync(`${appDir}/**/*.component.ts`);
     srcFiles.forEach(srcFile => {
       let contents = fs.readFileSync(srcFile).toString().split('\n');
@@ -17,12 +16,12 @@ export function addModuleIdToComponents(): Observable<any> {
       }
     });
 
-    observer.complete();
+    resolve();
   });
 }
 
-export function removeModuleIdFromComponents(): Observable<any> {
-  return new Observable(observer => {
+export function removeModuleIdFromComponents(): Promise<null> {
+  return new Promise(resolve => {
     let srcFiles = glob.sync(`${appDir}/**/*.component.ts`);
     srcFiles.forEach(srcFile => {
       let contents = fs.readFileSync(srcFile).toString().split('\n');
@@ -33,7 +32,7 @@ export function removeModuleIdFromComponents(): Observable<any> {
       }
     });
 
-    observer.complete();
+    resolve();
   });
 }
 

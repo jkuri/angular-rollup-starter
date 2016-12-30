@@ -9,6 +9,10 @@
     "@angular/forms": "vendor._angular_forms",
     "rxjs": "vendor.rxjs"
   },
-  "styles": ["css/app.css"],
-  "universalRoutes": ["/"]
+  "styles": [
+    "css/app.css"
+  ],
+  "universalRoutes": [
+    "/"
+  ]
 }

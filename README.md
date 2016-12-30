@@ -1,7 +1,7 @@
 # Angular2 Rollup Seed
 
-[![Build Status](https://travis-ci.org/jkuri/angular2-rollup-starter.svg?branch=master)](https://travis-ci.org/jkuri/angular2-rollup-starter)
-[![Build status](https://ci.appveyor.com/api/projects/status/u6b3i8c8fnrh4dmb?svg=true)](https://ci.appveyor.com/project/jkuri/angular2-rollup-starter)
+[![Build Status](https://travis-ci.org/jkuri/angular-rollup-starter.svg?branch=master)](https://travis-ci.org/jkuri/angular-rollup-starter)
+[![Build status](https://ci.appveyor.com/api/projects/status/u6b3i8c8fnrh4dmb?svg=true)](https://ci.appveyor.com/project/jkuri/angular-rollup-starter)
 
 Angular2 starter seed based on Rollup.
 Production builds including AoT steps. 
@@ -12,7 +12,7 @@ Starter also comes with Universal support built-in.
 First, clone this repository.
 
 ```sh
-git clone https://github.com/jkuri/angular2-rollup-starter.git --depth 1
+git clone https://github.com/jkuri/angular-rollup-starter.git --depth 1
 ```
 
 Move into cloned directory and run 

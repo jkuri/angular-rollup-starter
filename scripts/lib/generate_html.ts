@@ -3,13 +3,13 @@ import * as path from 'path';
 import * as _ from 'lodash';
 import * as chalk from 'chalk';
 import { Observable } from 'rxjs';
-import { getConfig } from './config';
+import { getConfig } from './utils';
 
 const config = getConfig();
 const index = path.resolve(__dirname, '../../src/index.html');
 const content = _.template(fs.readFileSync(index).toString());
 
-export function generateDev(dir: string): Observable<any> {
+export function generateDevHtml(dir: string): Observable<any> {
   const dest = path.resolve(dir, 'index.html');
   return new Observable(observer => {
     const styles = config.styles;
@@ -23,7 +23,7 @@ export function generateDev(dir: string): Observable<any> {
   });
 };
 
-export function generateProd(dir: string): Observable<any> {
+export function generateProdHtml(dir: string): Observable<any> {
   const dest = path.resolve(dir, 'index.html');
   return new Observable(observer => {
     const styles = config.styles;
@@ -37,7 +37,7 @@ export function generateProd(dir: string): Observable<any> {
   });
 };
 
-export function generateFromString(html: string, url: string): void {
+export function generateFromStringHtml(html: string, url: string): void {
   const styles = config.styles;
   const scripts = ['app.js'];
   let parsedHtml = _.template(html);
