@@ -66,5 +66,5 @@ export function printLine() {
 }
 
 export function logo() {
-  console.log(figlet.textSync(getPackageJson().name, { font: 'small' }));
+  console.log(figlet.textSync(getPackageJson().name, { font: 'Small' }));
 }
