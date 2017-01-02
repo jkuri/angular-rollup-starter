@@ -7,6 +7,7 @@ const nodeResolve = require('rollup-plugin-node-resolve');
 const angular = require('rollup-plugin-angular');
 const commonjs = require('rollup-plugin-commonjs');
 const alias = require('rollup-plugin-alias');
+const progress = require('rollup-plugin-progress');
 
 
 module.exports = (config) => {
@@ -45,6 +46,7 @@ module.exports = (config) => {
     },
     rollupPreprocessor: {
       context: 'this',
+      format: 'iife',
       plugins: [
         angular(),
         ts({
@@ -60,7 +62,8 @@ module.exports = (config) => {
         }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble()
+        buble(),
+        progress()
       ]
     },
     port: 9876,
