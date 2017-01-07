@@ -4,7 +4,6 @@ import * as temp from 'temp';
 import * as chalk from 'chalk';
 import { Observable } from 'rxjs';
 const portfinder = require('portfinder');
-const figlet = require('figlet');
 
 export function getConfig(): any {
   return fs.readJsonSync(path.resolve(__dirname, '../../config.json'));
@@ -63,8 +62,4 @@ export function setupTempDir(): Promise<string> {
 
 export function printLine() {
   console.log(chalk.blue('-------------------------------------------------------------------------------------------'));
-}
-
-export function logo() {
-  console.log(figlet.textSync(getPackageJson().name, { font: 'Small' }));
 }

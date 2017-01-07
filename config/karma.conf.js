@@ -59,6 +59,7 @@ module.exports = (config) => {
           '@angular/platform-browser/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser/testing/index.js'),
           '@angular/router/testing': path.resolve(__dirname, '../node_modules/@angular/router/testing/index.js'),
           '@angular/common/testing': path.resolve(__dirname, '../node_modules/@angular/common/testing/index.js'),
+          '@angular/http/testing': path.resolve(__dirname, '../node_modules/@angular/http/testing/index.js'),
         }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),

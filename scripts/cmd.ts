@@ -7,7 +7,7 @@ import { Server } from './lib/server';
 import { generateDevHtml, generateProdHtml } from './lib/generate_html';
 import { compileSass } from './lib/css';
 import { gzipApp } from './lib/gzip';
-import { clean, copyPublic, getConfig, setupTempDir, printLine, logo } from './lib/utils';
+import { clean, copyPublic, getConfig, setupTempDir, printLine } from './lib/utils';
 import { removeModuleIdFromComponents, addModuleIdToComponents } from './lib/helpers';
 
 const build: Build = new Build();
@@ -17,8 +17,6 @@ let sassSrc = path.resolve(__dirname, '../src/styles/app.sass');
 let cssDest = path.resolve(__dirname, '../dist/css/app.css');
 
 if (argv.build) {
-  printLine();
-  logo();
   printLine();
   console.time('Build');
   removeModuleIdFromComponents().then(() => {
@@ -41,8 +39,6 @@ if (argv.build) {
 }
 
 if (argv.serve) {
-  printLine();
-  logo();
   printLine();
   setupTempDir().then(tempDir => {
     server.watch(tempDir).subscribe(data => {
