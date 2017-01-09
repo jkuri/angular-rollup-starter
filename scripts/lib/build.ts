@@ -30,8 +30,8 @@ export class Build {
     this.config = getConfig();
   }
 
-  buildDev(tempDir: string, port: number): Observable<any> {
-    return this.buildDevMain(tempDir).concat(this.buildDevVendor(tempDir, port));
+  buildDev(tempDir: string, port: number, lrport: number): Observable<any> {
+    return this.buildDevMain(tempDir).concat(this.buildDevVendor(tempDir, port, lrport));
   }
 
   buildDevMain(tempDir: string): Observable<any> {
@@ -79,10 +79,10 @@ export class Build {
     }));
   };
 
-  buildDevVendor(tempDir: string, port: number): Observable<any> {
+  buildDevVendor(tempDir: string, port: number, lrport: number): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
-      this.devVendorBuilder(tempDir, port).subscribe(bundle => {
+      this.devVendorBuilder(tempDir, port, lrport).subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
           format: 'iife',
@@ -101,7 +101,7 @@ export class Build {
     });
   }
 
-  devVendorBuilder(tempDir: string, port: number): Observable<any> {
+  devVendorBuilder(tempDir: string, port: number, lrport: number): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
       context: 'this',
@@ -121,7 +121,8 @@ export class Build {
         }),
         livereload({
           watch: path.resolve(tempDir),
-          consoleLogMsg: false
+          consoleLogMsg: false,
+          port: lrport
         })
       ]
     }));
