@@ -166,7 +166,7 @@ export class Build {
 
   get prodBuilder(): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
-      entry: path.resolve(__dirname, '../../src/main.aot.ts'),
+      entry: path.resolve(__dirname, '../../aot/src/main.aot.js'),
       context: 'this',
       plugins: [
         angular({
@@ -175,9 +175,6 @@ export class Build {
               return sass.renderSync({ file: path, outputStyle: 'compressed' }).css;
             }
           }
-        }),
-        tsr({
-          typescript: require('../../node_modules/typescript')
         }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
