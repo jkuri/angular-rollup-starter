@@ -5,7 +5,7 @@ import { argv } from 'optimist';
 import { Build } from './lib/build';
 import { Server } from './lib/server';
 import { generateDevHtml, generateProdHtml } from './lib/generate_html';
-import { compileSass } from './lib/css';
+import { renderSass } from './lib/css';
 import { gzipApp } from './lib/gzip';
 import { clean, copyPublic, getConfig, setupTempDir, printLine } from './lib/utils';
 import { removeModuleIdFromComponents, addModuleIdToComponents } from './lib/helpers';
@@ -13,8 +13,8 @@ import { removeModuleIdFromComponents, addModuleIdToComponents } from './lib/hel
 const build: Build = new Build();
 const server: Server = new Server();
 
-let sassSrc = path.resolve(__dirname, '../src/styles/app.sass');
-let cssDest = path.resolve(__dirname, '../dist/css/app.css');
+let config = getConfig();
+let dist = path.resolve(__dirname, '../dist');
 
 if (argv.build) {
   printLine();
@@ -23,7 +23,7 @@ if (argv.build) {
     clean('dist')
       .concat(copyPublic('dist'))
       .concat(generateProdHtml('dist'))
-      .concat(compileSass(sassSrc, cssDest))
+      .concat(renderSass(config.styles, dist))
       .concat(build.buildProd)
       .concat(clean('dist/src'))
       .concat(clean('aot'))

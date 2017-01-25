@@ -5,26 +5,25 @@ import { Observable, Subscription } from 'rxjs';
 import { generateDevHtml } from './generate_html';
 import { copyPublic } from './utils';
 import { Build } from './build';
-import { compileSass } from './css';
+import { renderSass } from './css';
 import { removeModuleIdFromComponents } from './helpers';
-import { getPort, getLivereloadPort, printLine } from './utils';
+import { getPort, printLine, getConfig } from './utils';
 const open = require('open');
 
 export class Server {
+  config: any;
   port: number;
   private builder: Build;
 
   constructor() {
+    this.config = getConfig();
     this.builder = new Build();
   }
 
   watch(tempDir: string): Observable<any> {
     return new Observable(observer => {
-      const sassSrc = path.resolve(__dirname, '../../src/styles/app.sass');
-      const cssDest = path.resolve(tempDir, 'css/app.css');
       let building: Subscription = null;
-      let port;
-      let lrport;
+      let stylesArr = this.config.styles.map(s => path.basename(s.src));
 
       const watcher = chokidar.watch(path.resolve(__dirname, '../../src'), {
         persistent: true
@@ -37,60 +36,68 @@ export class Server {
       watcher.on('ready', () => {
         printLine();
 
-        removeModuleIdFromComponents()
-          .then(() => getPort())
-          .then(p => port = p)
-          .then(() => getLivereloadPort())
-          .then(lrp => lrport = lrp)
-          .then(() => {
-            copyPublic(tempDir)
-            .concat(generateDevHtml(tempDir))
-            .concat(compileSass(sassSrc, cssDest))
-            .concat(this.builder.buildDev(tempDir, port, lrport)).subscribe(data => {
-              observer.next(data);
-            }, err => {
-              console.log(chalk.red(err));
-            }, () => {
-              open(`http://localhost:${port}`);
-              watcher.on('change', (file, stats) => {
-                let ext: string = path.extname(file);
-                let basename: string = path.basename(file);
-                observer.next(chalk.blue(`${basename} changed...`));
-                switch (ext) {
-                  case '.html':
-                    if (basename === 'index.html') {
-                      generateDevHtml(tempDir).subscribe(data => observer.next(data));
-                    } else {
-                      this.builder.cache = null;
-                      if (this.builder.building) {
-                        building.unsubscribe();
-                        building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
-                      } else {
-                        building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
-                      }
-                    }
-                    break;
-                  case '.ts':
+        removeModuleIdFromComponents().then(() => getPort()).then(port => {
+          copyPublic(tempDir)
+          .concat(generateDevHtml(tempDir))
+          .concat(renderSass(this.config.styles, tempDir))
+          .concat(this.builder.buildDev(tempDir, port)).subscribe(data => {
+            observer.next(data);
+          }, err => {
+            console.log(chalk.red(err));
+          }, () => {
+            open(`http://localhost:${port}`);
+            watcher.on('change', (file, stats) => {
+              let ext: string = path.extname(file);
+              let basename: string = path.basename(file);
+              observer.next(chalk.blue(`${basename} changed...`));
+              switch (ext) {
+                case '.html':
+                  if (basename === 'index.html') {
+                    generateDevHtml(tempDir).subscribe(data => observer.next(data));
+                  } else {
+                    this.builder.cache = null;
                     if (this.builder.building) {
                       building.unsubscribe();
-                      building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
-                    } else {
-                      building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
                     }
-                    break;
-                  case '.sass':
-                    compileSass(sassSrc, cssDest).subscribe(data => { observer.next(data); });
-                    break;
-                  default:
-                    break;
-                }
-              });
-
-              publicWatcher.on('add', () => copyPublic(tempDir).subscribe(data => console.log(data)));
-              publicWatcher.on('change', () => copyPublic(tempDir).subscribe(data => console.log(data)));
-              publicWatcher.on('remove', () => copyPublic(tempDir).subscribe(data => console.log(data)));
+                    building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
+                  }
+                  break;
+                case '.ts':
+                  if (this.builder.building) {
+                    building.unsubscribe();
+                  }
+                  building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
+                  break;
+                case '.sass':
+                  if (stylesArr.indexOf(basename) !== -1) {
+                    renderSass(this.config.styles, tempDir).subscribe(data => { observer.next(data); });
+                  } else {
+                    if (this.builder.building) {
+                      building.unsubscribe();
+                    }
+                    building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
+                  }
+                  break;
+                case '.scss':
+                  if (stylesArr.indexOf(basename) !== -1) {
+                    renderSass(this.config.styles, tempDir).subscribe(data => { observer.next(data); });
+                  } else {
+                    if (this.builder.building) {
+                      building.unsubscribe();
+                    }
+                    building = this.builder.buildDevMain(tempDir).subscribe(data => observer.next(data));
+                  }
+                  break;
+                default:
+                  break;
+              }
             });
+
+            publicWatcher.on('add', () => copyPublic(tempDir).subscribe(data => console.log(data)));
+            publicWatcher.on('change', () => copyPublic(tempDir).subscribe(data => console.log(data)));
+            publicWatcher.on('remove', () => copyPublic(tempDir).subscribe(data => console.log(data)));
           });
+        });
       });
     });
   }

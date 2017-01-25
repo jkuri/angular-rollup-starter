@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import * as path from 'path';
-import * as fs from 'fs-extra';
+import * as sass from 'node-sass';
 import * as chalk from 'chalk';
 import { Observable } from 'rxjs';
 import * as ts from 'typescript';
@@ -30,8 +30,8 @@ export class Build {
     this.config = getConfig();
   }
 
-  buildDev(tempDir: string, port: number, lrport: number): Observable<any> {
-    return this.buildDevMain(tempDir).concat(this.buildDevVendor(tempDir, port, lrport));
+  buildDev(tempDir: string, port: number): Observable<any> {
+    return this.buildDevMain(tempDir).concat(this.buildDevVendor(tempDir, port));
   }
 
   buildDevMain(tempDir: string): Observable<any> {
@@ -66,7 +66,13 @@ export class Build {
       cache: this.cache,
       context: 'this',
       plugins: [
-        angular(),
+        angular({
+          preprocessors: {
+            style: (scss: string, path: string) => {
+              return sass.renderSync({ file: path, outputStyle: 'compressed' }).css;
+            }
+          }
+        }),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -79,10 +85,10 @@ export class Build {
     }));
   };
 
-  buildDevVendor(tempDir: string, port: number, lrport: number): Observable<any> {
+  buildDevVendor(tempDir: string, port: number): Observable<any> {
     return Observable.create(observer => {
       let start: Date = new Date();
-      this.devVendorBuilder(tempDir, port, lrport).subscribe(bundle => {
+      this.devVendorBuilder(tempDir, port).subscribe(bundle => {
         this.cache = bundle;
         Observable.fromPromise(bundle.write({
           format: 'iife',
@@ -101,12 +107,18 @@ export class Build {
     });
   }
 
-  devVendorBuilder(tempDir: string, port: number, lrport: number): Observable<any> {
+  devVendorBuilder(tempDir: string, port: number): Observable<any> {
     return Observable.fromPromise(rollup.rollup({
       entry: path.resolve(__dirname, '../../src/vendor.ts'),
       context: 'this',
       plugins: [
-        angular(),
+        angular({
+          preprocessors: {
+            style: (scss: string, path: string) => {
+              return sass.renderSync({ file: path, outputStyle: 'compressed' }).css;
+            }
+          }
+        }),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),
@@ -121,8 +133,7 @@ export class Build {
         }),
         livereload({
           watch: path.resolve(tempDir),
-          consoleLogMsg: false,
-          port: lrport
+          consoleLogMsg: false
         })
       ]
     }));
@@ -158,7 +169,13 @@ export class Build {
       entry: path.resolve(__dirname, '../../src/main.aot.ts'),
       context: 'this',
       plugins: [
-        angular(),
+        angular({
+          preprocessors: {
+            style: (scss: string, path: string) => {
+              return sass.renderSync({ file: path, outputStyle: 'compressed' }).css;
+            }
+          }
+        }),
         tsr({
           typescript: require('../../node_modules/typescript')
         }),

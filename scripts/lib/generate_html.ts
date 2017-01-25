@@ -14,7 +14,7 @@ export function generateDevHtml(dir: string): Observable<any> {
   return new Observable(observer => {
     const styles = config.styles;
     const scripts = ['vendor.js', 'main.js'];
-    fs.outputFile(dest, content({ styles: styles, scripts: scripts }), err => {
+    fs.outputFile(dest, content({ styles: styles.map(style => style.dest.replace('dist/', '')), scripts: scripts }), err => {
       if (err) {
         observer.error(err);
       }
@@ -28,7 +28,7 @@ export function generateProdHtml(dir: string): Observable<any> {
   return new Observable(observer => {
     const styles = config.styles;
     const scripts = ['app.js'];
-    fs.outputFile(dest, content({ styles: styles, scripts: scripts }), err => {
+    fs.outputFile(dest, content({ styles: styles.map(style => style.dest.replace('dist/', '')), scripts: scripts }), err => {
       if (err) {
         observer.error(err);
       }
@@ -43,5 +43,5 @@ export function generateFromStringHtml(html: string, url: string): void {
   let parsedHtml = _.template(html);
   url = url === '/' ? 'index' : url;
   let destinationFile = path.resolve(__dirname, `../../dist/${url}.html`);
-  fs.outputFileSync(destinationFile, parsedHtml({ styles: styles, scripts: scripts }));
+  fs.outputFileSync(destinationFile, parsedHtml({ styles: styles.map(style => style.dest.replace('dist/', '')), scripts: scripts }));
 }
