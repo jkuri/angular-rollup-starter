@@ -26,6 +26,11 @@
     "src/app/app.module.ts",
     "src/main.aot.ts"
   ],
+  "exclude": [
+    "node_modules",
+    "aot",
+    "dist"
+  ],
   "angularCompilerOptions": {
     "genDir": "aot",
     "skipMetadataEmit": true
