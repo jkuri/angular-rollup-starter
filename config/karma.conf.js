@@ -2,7 +2,6 @@
 
 const path = require('path');
 const ts = require('rollup-plugin-typescript');
-const buble = require('rollup-plugin-buble');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const angular = require('rollup-plugin-angular');
 const commonjs = require('rollup-plugin-commonjs');
@@ -63,7 +62,6 @@ module.exports = (config) => {
         }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble(),
         progress()
       ]
     },
