@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import * as path from 'path';
 import * as sass from 'node-sass';
 import * as chalk from 'chalk';
+import * as fs from 'fs-extra';
 import { Observable } from 'rxjs';
 import * as ts from 'typescript';
 import * as tsc from '@angular/tsc-wrapped';
@@ -9,13 +10,12 @@ import { CodeGenerator } from '@angular/compiler-cli';
 import * as spinner from './spinner';
 import { timeHuman } from './helpers';
 import { getConfig } from './utils';
+import * as uglify from 'uglify-js';
 const rollup = require('rollup');
 const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const angular = require('rollup-plugin-angular');
 const tsr = require('rollup-plugin-typescript');
-const buble = require('rollup-plugin-buble');
-const uglify = require('rollup-plugin-uglify');
 const serve = require('rollup-plugin-serve');
 const livereload = require('../plugins/rollup-plugin-livereload');
 const progress = require('rollup-plugin-progress');
@@ -77,8 +77,7 @@ export class Build {
           typescript: require('../../node_modules/typescript')
         }),
         commonjs(),
-        nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble(),
+        nodeResolve(),
         progress()
       ],
       external: Object.keys(this.config.externalPackages)
@@ -123,8 +122,7 @@ export class Build {
           typescript: require('../../node_modules/typescript')
         }),
         commonjs(),
-        nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble(),
+        nodeResolve(),
         progress(),
         serve({
           contentBase: path.resolve(tempDir),
@@ -177,13 +175,29 @@ export class Build {
           }
         }),
         commonjs(),
-        nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble(),
-        uglify(),
+        nodeResolve(),
         progress()
       ]
     }));
   };
+
+  get minifyBundle(): Observable<any> {
+    return Observable.create(observer => {
+      let start: Date = new Date();
+      spinner.start('Optimizing...');
+      let file = path.resolve(__dirname, '../../dist/app.js');
+      fs.writeFile(file, uglify.minify(file).code, (err: NodeJS.ErrnoException) => {
+        spinner.stop();
+        if (err) {
+          observer.error(err);
+        }
+
+        let time: number = new Date().getTime() - start.getTime();
+        observer.next(`${chalk.green('✔')} Optimizing time: ${timeHuman(time)}`);
+        observer.complete();
+      });
+    });
+  }
 
   private codegen(ngOptions: tsc.AngularCompilerOptions, cliOptions: tsc.NgcCliOptions, program: ts.Program, host: ts.CompilerHost) {
     return CodeGenerator.create(ngOptions, cliOptions, program, host).codegen();

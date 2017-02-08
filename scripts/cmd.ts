@@ -25,6 +25,7 @@ if (argv.build) {
       .concat(generateProdHtml('dist'))
       .concat(renderSass(config.styles, dist))
       .concat(build.buildProd)
+      .concat(build.minifyBundle)
       .concat(clean('dist/src'))
       .concat(clean('aot'))
       .concat(gzipApp()).subscribe(data => {
