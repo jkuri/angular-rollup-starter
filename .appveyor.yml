@@ -1,22 +1,20 @@
 environment:
   matrix:
-  - nodejs_version: "6.0"
   - nodejs_version: "7.0"
- 
+
 matrix:
   fast_finish: true
- 
+
 install:
-  - ps: Install-Product node $env:nodejs_version
+   - ps: Install-Product node $env:nodejs_version
   - npm install
-  - ps: $Serve-Process = Start-Process npm start -PassThru
- 
+
 test_script:
   - node --version
   - npm --version
-  - npm run ci
+  - npm test
 
 on_finish:
   - ps: Stop-Process -Id $Serve-Process.Id
-    
+
 build: off
