@@ -52,7 +52,7 @@ export function prerender(url: string): Promise<null> {
     baseUrl: '/',
     requestUrl: url,
     document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString(),
-    preboot: true,
+    preboot: false,
     compilerOptions: require('../../tsconfig.json').compilerOptions
   };
 
