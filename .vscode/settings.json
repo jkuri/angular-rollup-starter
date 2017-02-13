@@ -1,5 +1,5 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "vsicons.presets.angular": true,
-  "tslint.rulesDirectory": "./node_modules/codelyzer"
+  "tslint.rulesDirectory": "node_modules/codelyzer"
 }
