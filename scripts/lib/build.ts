@@ -11,13 +11,13 @@ import * as spinner from './spinner';
 import { timeHuman } from './helpers';
 import { getConfig } from './utils';
 import * as uglify from 'uglify-js';
+import { livereload } from '../plugins/rollup-plugin-livereload';
 const rollup = require('rollup');
 const commonjs = require('rollup-plugin-commonjs');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const angular = require('rollup-plugin-angular');
 const tsr = require('rollup-plugin-typescript');
 const serve = require('rollup-plugin-serve');
-const livereload = require('../plugins/rollup-plugin-livereload');
 const progress = require('rollup-plugin-progress');
 
 export class Build {
