@@ -78,6 +78,8 @@
     "glob": "^7.1.1",
     "jasmine": "^2.5.3",
     "jasmine-spec-reporter": "^3.2.0",
+    "jsdom": "^9.11.0",
+    "jsdom-global": "^2.1.1",
     "karma": "^1.4.1",
     "karma-chrome-launcher": "^2.0.0",
     "karma-jasmine": "^1.1.0",

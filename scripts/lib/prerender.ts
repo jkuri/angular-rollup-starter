@@ -34,7 +34,9 @@ import { generateFromStringHtml } from './generate_html';
 import { platformNodeDynamic } from 'ng2-platform-node';
 
 declare var Zone: any;
-let prodMode: boolean = false;
+let prodMode = false;
+
+require('jsdom-global')();
 
 export function runPrerender(): Promise<null> {
   return new Promise(resolve => {
