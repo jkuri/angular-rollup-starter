@@ -39,46 +39,38 @@ let prodMode = false;
 require('jsdom-global')();
 
 export function runPrerender(): Promise<null> {
-  return new Promise(resolve => {
-    let config = getConfig();
-    Promise.all(config.universalRoutes.map(route => prerender(route)))
-    .then(() => {
-      resolve();
-    })
-  });
+  let config = getConfig();
+  return Promise.all(config.universalRoutes.map(route => prerender(route)));
 };
 
 export function prerender(url: string): Promise<null> {
-  return new Promise(resolve => {
-    const options = {
-      precompile: true,
-      time: false,
-      ngModule: AppModule,
-      originUrl: 'http://localhost:3000/',
-      baseUrl: '/',
-      requestUrl: url,
-      document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString(),
-      preboot: false,
-      compilerOptions: require('../../tsconfig.json').compilerOptions
-    };
+  let options = {
+    precompile: true,
+    time: false,
+    ngModule: AppModule,
+    originUrl: 'http://localhost:3000/',
+    baseUrl: '/',
+    requestUrl: url,
+    document: fs.readFileSync(path.resolve(__dirname, '../../src/index.html')).toString(),
+    preboot: true,
+    compilerOptions: require('../../tsconfig.json').compilerOptions
+  };
 
-    const platformRef: any = platformNodeDynamic();
+  let platformRef: any = platformNodeDynamic();
 
-    const zone = Zone.current.fork({
-      properties: options
-    });
-
-    if (!prodMode) {
-      enableProdMode();
-      prodMode = true;
-    }
-
-    zone.run(() => (platformRef.serializeModule(options.ngModule, options)).then(html => {
-      generateFromStringHtml(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), url);
-      url = url === '/' ? '/index' : url;
-      url = url.replace('/', 'dist/');
-      console.log(`${chalk.green('✔')} ${url}.html prerendered.`);
-      resolve();
-    }));
+  let zone = Zone.current.fork({
+    properties: options
   });
+
+  if (!prodMode) {
+    enableProdMode();
+    prodMode = true;
+  }
+
+  return zone.run(() => (platformRef.serializeModule(options.ngModule, options)).then(html => {
+    generateFromStringHtml(html.replace(/&lt;/g, '<').replace(/&gt;/g, '>'), url);
+    url = url === '/' ? '/index' : url;
+    url = url.replace('/', 'dist/');
+    console.log(`${chalk.green('✔')} ${url}.html prerendered.`);
+  }));
 }
