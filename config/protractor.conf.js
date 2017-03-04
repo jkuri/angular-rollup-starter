@@ -1,8 +1,8 @@
-const SpecReporter = require('jasmine-spec-reporter');
+const SpecReporter = require('jasmine-spec-reporter').SpecReporter;
 const path = require('path');
 
 exports.config = {
-  baseUrl: 'http://localhost:4200',
+  baseUrl: 'http://localhost:8000',
   specs: [
     path.resolve(__dirname, '../e2e/**/*.e2e.ts')
   ],

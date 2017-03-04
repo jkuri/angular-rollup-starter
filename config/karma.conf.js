@@ -2,11 +2,11 @@
 
 const path = require('path');
 const ts = require('rollup-plugin-typescript');
-const buble = require('rollup-plugin-buble');
 const nodeResolve = require('rollup-plugin-node-resolve');
 const angular = require('rollup-plugin-angular');
 const commonjs = require('rollup-plugin-commonjs');
 const alias = require('rollup-plugin-alias');
+const progress = require('rollup-plugin-progress');
 
 
 module.exports = (config) => {
@@ -45,6 +45,7 @@ module.exports = (config) => {
     },
     rollupPreprocessor: {
       context: 'this',
+      format: 'iife',
       plugins: [
         angular(),
         ts({
@@ -57,10 +58,11 @@ module.exports = (config) => {
           '@angular/platform-browser/testing': path.resolve(__dirname, '../node_modules/@angular/platform-browser/testing/index.js'),
           '@angular/router/testing': path.resolve(__dirname, '../node_modules/@angular/router/testing/index.js'),
           '@angular/common/testing': path.resolve(__dirname, '../node_modules/@angular/common/testing/index.js'),
+          '@angular/http/testing': path.resolve(__dirname, '../node_modules/@angular/http/testing/index.js'),
         }),
         commonjs(),
         nodeResolve({ jsnext: true, main: true, browser: true }),
-        buble()
+        progress()
       ]
     },
     port: 9876,

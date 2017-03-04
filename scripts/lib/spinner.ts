@@ -6,8 +6,8 @@ let spinner;
 export function start(msg = ''): void {
   if (spinner) { spinner.stop(); }
   spinner = clispinner({
-    text: chalk.yellow(msg),
-    color: 'yellow',
+    text: msg,
+    color: 'blue',
     spinner: 'growVertical',
     enabled: true,
     stream: process.stdout

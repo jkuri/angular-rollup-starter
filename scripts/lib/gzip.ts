@@ -2,9 +2,10 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import * as zlib from 'zlib';
 import * as chalk from 'chalk';
+import { printLine } from './utils';
 import { Observable } from 'rxjs';
 
-export function app(): Observable<any> {
+export function gzipApp(): Observable<any> {
   return gzip('app.js', 'app.js.gz');
 }
 
@@ -28,12 +29,10 @@ function gzip(srcFile: string, gzipFile: string): Observable<any> {
         'gzip': formatBytes(gzipStats.size, 2)
       };
 
-      let output = chalk.green('-------------------------------------------------------\n');
-      output += chalk.red(`${srcFile} (${sizes['src']})\n`);
-      output += chalk.green(`${srcFile}.gz (${sizes['gzip']})`);
-      output += chalk.green('\n-------------------------------------------------------');
+      printLine();
+      console.log(`${chalk.red(srcFile)} (${sizes['src']}) -> ${chalk.green(srcFile + '.gz')} (${sizes['gzip']})`);
+      printLine();
 
-      observer.next(output);
       observer.complete();
     }
   });

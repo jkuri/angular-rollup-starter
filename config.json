@@ -1,6 +1,7 @@
 {
+  "servePort": null,
   "externalPackages": {
-    "@angular/core": "vendor._angular_core",
+   "@angular/core": "vendor._angular_core",
     "@angular/common": "vendor._angular_common",
     "@angular/platform-browser": "vendor._angular_platformBrowser",
     "@angular/platform-browser-dynamic": "vendor._angular_platformBrowserDynamic",
@@ -9,6 +10,10 @@
     "@angular/forms": "vendor._angular_forms",
     "rxjs": "vendor.rxjs"
   },
-  "styles": ["css/app.css"],
-  "universalRoutes": ["/"]
+  "styles": [
+    { "src": "src/styles/app.sass", "dest": "dist/css/app.css" }
+  ],
+  "universalRoutes": [
+    "/"
+  ]
 }
